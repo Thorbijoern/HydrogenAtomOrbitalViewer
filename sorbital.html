@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Generates view of atomic orbital </title>
+		<style>
+			body {
+				margin :0;
+			}
+			canvas {
+				width:100%;
+				height:100%;
+			}
+		</style>
+		<script>
+			// Integrates Via Simpson's Rule
+
+			//takes function, resolution and range and returns 3D array of values
+			function simpsonIntegrate (foo, xmin, xmax, ymin, ymax, zmin, zmax, resolution){
+				var coordinates = [];
+				var xsteps = (xmax-xmin)/resolution;
+				var ysteps = (ymax-ymin)/resolution;
+				var zsteps = (zmax-zmin)/resolution;
+
+				var currentx = xmin;
+				var currenty = ymin;
+				var currentz = zmin;
+
+				var tempcurr;
+				var tempmid;
+				var tempafter;
+
+				for(var i = 0; i < resolution; i++,currentx += xsteps){
+					currenty = ymin;
+					for(var j = 0; j < resolution; j++, currenty +=ysteps){
+						currentz = zmin;	
+						for(var k = 0; k < resolution; k++,currentz += zsteps){
+							tempcurr = foo(currentx,currenty,currentz);
+							tempmid = foo(currentx+xsteps/2,currenty+ysteps/2,currentz+zsteps/2);
+							tempafter = foo(currentx+xsteps,currenty+ysteps,currentz+zsteps);
+							value = xsteps*ysteps*zsteps*(tempcurr+4*tempmid+tempafter)/6;
+							if (value < 0){
+								coordinates.push([currentx+xsteps/2, currenty+ysteps/2, currentz+zsteps/2,Math.pow(value,2),0x0000ff]);	
+							}
+							else{
+								coordinates.push([currentx+xsteps/2, currenty+ysteps/2, currentz+zsteps/2,Math.pow(value,2),0xff0000]);
+							
+							}
+							
+						}
+						
+					}
+					
+				}
+				return coordinates;
+				
+			}
+			//Wave functions go here
+			function n1l0m0(x,y,z){
+				return 40*Math.exp(-2*Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)));
+			}
+			function n2l0m0(x,y,z){
+				var r =Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+				return 1.3*(2-r)*Math.exp(-r/2);
+			}
+			function n2l1m0(x,y,z){
+				return 10*Math.exp(-Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)))*z;
+			}
+			function n2l1mNeg1(x,y,z){
+				return 10*Math.exp(-Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)))*x;
+			}
+			function n2l1mPos1(x,y,z){
+				return 10*Math.exp(-Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)))*y;
+			}
+			function n3l0m0(x,y,z){
+				var r =Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+				return (27-36*r+2*Math.pow(2*r,2))*Math.exp(-2*r/3)/5;
+			}
+			function n3l2m0(x,y,z){
+				var r =Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+				return (3*Math.pow(z,2)-Math.pow(r,2))*Math.exp(-r/3)/5;
+			}
+
+		</script>
+	</head>
+	<body>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
+		<script src="https://dl.dropboxusercontent.com/u/3587259/Code/Threejs/OrbitControls.js"></script>
+		<script>
+
+			function cubePos(posArr) {//Creates THREE vector from array of vectors
+				var cubeVec =[];
+				for (i = 0; i < posArr.length; i++) {
+					cubeVec.push([new THREE.Vector3(posArr[i][0],posArr[i][1],posArr[i][2]),posArr[i][3],posArr[i][4]]);
+				}
+				return cubeVec;
+			}
+
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth,window.innerHeight);
+			document.body.appendChild( renderer.domElement );
+
+			var geometry = new THREE.CubeGeometry(0.75,0.75,0.75);
+			var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1,0.1,0.1),new THREE.MeshBasicMaterial({color:0xffffff}));
+
+			scene.add(nucleus);
+
+			var light =  new THREE.PointLight(0xffffff);
+			light.position.copy(new THREE.Vector3(0,0,30));
+			scene.add(light);
+
+			var posArr =simpsonIntegrate(n3l2m0,-5,5,-5,5,-5,5,15);
+			var cubeVec=cubePos(posArr);
+			var cube =[];
+
+			for (i = 0; i < cubeVec.length; i++){
+				cube.push(new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({color:cubeVec[i][2],transparent:true})));
+				cube[i].material.opacity = cubeVec[i][1];
+				scene.add(cube[i]);
+				cube[i].position.copy(cubeVec[i][0]);
+				
+				
+			}
+
+			camera.position.z = 15;
+			camera.position.x =0;
+
+			/*controls = new THREE.OrbitControls( camera);
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.25;
+			controls.enableZoom = true;*/
+
+			window.addEventListener( 'resize', onResize, false );
+			function onResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				//controls.handleResize();
+				cube[0].position.x+=3;
+			}
+
+
+			function animate() {
+				requestAnimationFrame( animate );
+				//controls.update();
+				light.position.copy(camera.position);
+				render();
+			}
+			function render() {
+				renderer.render( scene, camera );
+			}
+			animate();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Generates Cubes from array of points </title>
+		<style>
+			body {
+				margin :0;
+			}
+			canvas {
+				width:100%;
+				height:100%;
+			}
+		</style>
+		<script>
+			// Integrates Via Simpson's Rule
+
+			//takes function, resolution and range and returns 3D array of values
+			function simpsonIntegrate (foo, xmin, xmax, ymin, ymax, zmin, zmax, resolution){
+				var coordinates = [];
+				var xsteps = (xmax-xmin)/resolution;
+				var ysteps = (ymax-ymin)/resolution;
+				var zsteps = (zmax-zmin)/resolution;
+
+				var currentx = xmin;
+				var currenty = ymin;
+				var currentz = zmin;
+
+				var tempcurr;
+				var tempmid;
+				var tempafter;
+
+				for(var i = 0; i < resolution; i++,currentx += xsteps){
+					currenty = ymin;
+					for(var j = 0; j < resolution; j++, currenty +=ysteps){
+						currentz = zmin;	
+						for(var k = 0; k < resolution; k++,currentz += zsteps){
+							tempcurr = foo(currentx,currenty,currentz);
+							tempmid = foo((currentx+xsteps)/2,(currenty+ysteps)/2,(currentz+zsteps)/2);
+							tempafter = foo(currentx+xsteps,currenty+ysteps,currentz+zsteps);
+							value = xsteps*ysteps*zsteps*(tempcurr+4*tempmid+tempafter)/6;
+							coordinates.push([currentx, currenty, currentz,value]);		
+							
+						}
+						
+					}
+					
+				}
+				return coordinates;
+				
+			}
+
+			function linear(x,y,z){
+				return Math.exp(-2*Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)));
+			}
+
+		</script>
+	</head>
+
+	<body >
+		<script src="three.min.js"></script>
+		<script>
+			function linear(x,y,z){
+				return Math.exp(-2*Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2)));
+			}
+
+			function cubePos(posArr) {//Creates THREE vector from array of vectors
+				var cubeVec =[];
+				for (i = 0; i < posArr.length; i++) {
+					cubeVec.push([new THREE.Vector3(posArr[i][0],posArr[i][1],posArr[i][2]),posArr[i][3]]);
+				}
+				return cubeVec;
+			}
+
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth,window.innerHeight);
+			document.body.appendChild( renderer.domElement );
+
+			var geometry = new THREE.BoxGeometry(0.5,0.5,0.5);
+
+			var light =  new THREE.PointLight(0x00ffff);
+			light.position.copy(new THREE.Vector3(0,0,100));
+			var light2 =  new THREE.PointLight(0x00ffff);
+			light2.position.copy(new THREE.Vector3(100,0,0));
+			var light3 =  new THREE.PointLight(0x00ffff);
+			light3.position.copy(new THREE.Vector3(0,100,0));
+			scene.add(light,light2,light3, new THREE.AmbientLight(0xff0000));
+
+			var posArr =simpsonIntegrate(linear,-1,1,-1,1,-1,1,10);
+			var cubeVec=cubePos(posArr);
+			var cube =[];
+
+			for (i = 0; i < cubeVec.length; i++){
+				cube.push(new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({color:0x00ff00,transparent:true})));
+				cube[i].material.opacity = cubeVec[i][1];
+				console.log(cubeVec[i][0],cubeVec[i][1]);
+				scene.add(cube[i]);
+				cube[i].position.copy(cubeVec[i][0]);
+				
+				
+			}
+
+			camera.position.z = 2;
+			function render(){
+
+				requestAnimationFrame(render);
+				renderer.render(scene, camera);
+			}
+			render();
+		</script>
+	</body>
+</html>
