@@ -3,8 +3,8 @@
 	<head>
 		<meta charset=utf-8>
 		<title>Generates view of atomic orbital </title>
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+		<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+		<link href="https://fonts.googleapis.com/css?family=Bubbler+One|Source+Sans+Pro:600" rel="stylesheet">
 		<link rel="stylesheet" href="css/hydrogen.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script type="x-shader/x-vertex" id="vertexshader">
@@ -50,25 +50,38 @@
   						$("#m").append("<option value = 'Neg" + Math.abs(i)+ "' selected>m="+i+"</option>");
   					}
     				else if(i == 0){
-    						$("#m").append("<option value = '" + i+ "' selected>m="+i+"</option>");
+    						$("#m").append("<option value = '" + i + "' selected>m="+i+"</option>");
     				}
    					else{
-   							$("#m").append("<option value = 'Pos" + i+ "'>m="+i+"</option>");
+   							$("#m").append("<option value = 'Pos" + i + "'>m="+i+"</option>");
    					}
   				}
 			}
 		</script>
 	</head>
-	<body style="background:black">
-		<h1 align="center">Hydrogen Atomic Orbital Viewer</hi>
+	<body style="background:white">
+		<h1 align="center">Hydrogen Atomic Orbital Viewer
+		</h1>
 		<div class ="container-fluid">
-	 		<div class = "row">
+			<div class = "row">
+				<div class="col-lg-12 info-panel" ><
+					<div class="row">
+						<div class="col-lg-2">
+							<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Erwin_Schr%C3%B6dinger_%281933%29.jpg/220px-Erwin_Schr%C3%B6dinger_%281933%29.jpg" class="rounded-circle" style="height:200px">
+						</div>
+						<div class="col-lg-10">
+							<h2>Schrodinger Equation</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+	 		<div class = "row" style="background-color:black">
 				<div id="model-container" class="col-md-8"></div> 
-		        <div class = "row">
-	       			<p style ="text-align: center">Controls</p>
+	       			
 	       			<div class = "col-md-1">
+	       			<p style ="text-align: center">Controls</p>
 	           			<div class="row">           
-	           				<select id="n" onchange = 'changel()'>
+	           				<select class="form-control" id="n" onchange = 'changel()'>
 	               				<option value = '1' selected>n=1</option>
 	               				<option value = '2' >n=2</option>
 	               				<option value = '3' >n=3</option>
@@ -76,12 +89,12 @@
 	           				</select>
 	           			</div>
 	           			<div class="row">
-	           				<select id="l" onchange= 'changem()'>
+	           				<select class="form-control" id="l" onchange= 'changem()'>
 	               				<option value = '0' >l=0</option>
 	           				</select>
 	           			</div>
 	           			<div class="row">
-            				<select id="m">
+            				<select class="form-control" id="m">
 	               				<option value = '0'>m=0</option>
 	           				</select>
 	           			</div>         
@@ -92,10 +105,9 @@
 	            		<input type="range" id="chart-slider" name="Resolution" min = "0" max="20" onchange="reloadChart();" >
 	            		<canvas id="myChart"></canvas>
 	          		</div>
-	      		</div>	
 	    	</div>
 	  	</div>
-		<div class = 'row'>
+		<div class = 'row' style="background-color:black">
 			<div class = 'col-md-1'><p style ="font-size:12pt;">Instructions: </p></div>
 		  	<div class = 'col-md-3'>
 			  	<p style ="font-size:10pt; font-family:Arial">*Use the Mouse wheel to zoom</p>
@@ -103,7 +115,7 @@
 			  	<p style ="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
 			  	<p style ="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
 		  	</div>  	
-		</div>
+		</div><
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
 		<script src="js/OrbitControls.js"></script>
 		<script src="js/WaveFunction.js"></script>
@@ -186,7 +198,7 @@
 			var range = 8;
 			var n =1;
 			var l =0;
-			var cameraOffset =10+6*Math.pow(n,2)+2*l;
+			var cameraOffset =10+11*Math.pow(n,2)+2*l;
 			var posArr =simpsonIntegrate(n1l0m0,-range,range,-range,range,-range,range,resolution);
 
 			var geometry = new THREE.BufferGeometry();
