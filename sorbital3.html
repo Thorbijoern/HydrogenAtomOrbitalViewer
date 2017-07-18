@@ -1,453 +1,508 @@
 <!doctype html>
-<html>	
-	<head>
-		<meta charset=utf-8>
-		<title>Generates view of atomic orbital </title>
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="css/hydrogen.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-		<script type="x-shader/x-vertex" id="vertexshader">
-		    attribute float alpha;
-    		varying float vAlpha;
-			attribute float size;
-			attribute vec3 customColor;
-			varying vec3 vColor;
-			void main() {
-				vAlpha = alpha;
-				vColor = customColor;
-				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-				gl_PointSize = size* ( 300.0 / -mvPosition.z );
-				gl_Position = projectionMatrix * mvPosition;
-			}
-		</script>
-		<script type="x-shader/x-fragment" id="fragmentshader">
-			varying float vAlpha;
-			uniform vec3 color;
-			varying vec3 vColor;
-			//uniform sampler2D texture;
+<html>
 
-			void main() {
-				gl_FragColor = vec4( color * vColor, vAlpha );
-			}
-		</script>		
-		<script>
-		//Manipulate UI
-			function changel(){
-				console.log("works");
-    			$("#l").html("");
-  					var n = $("#n").val();
- 			 		for(i = 0; i< n; i++){
-   						$("#l").append("<option value = '" + i+ "'>l="+i+"</option>");
-					}
-					changem();  
-			}
-			function changem(){
-   				$("#m").html("");
-				var l = $("#l").val();
-  				for(i = -l; i<=l; i++){
-  					if(i < 0){
-  						$("#m").append("<option value = 'Neg" + Math.abs(i)+ "' selected>m="+i+"</option>");
-  					}
-    				else if(i == 0){
-    						$("#m").append("<option value = '" + i+ "' selected>m="+i+"</option>");
-    				}
-   					else{
-   							$("#m").append("<option value = 'Pos" + i+ "'>m="+i+"</option>");
-   					}
-  				}
-			}
-		</script>
-	</head>
-	<body style="background:black">
-		<h1 align="center">Hydrogen Atomic Orbital Viewer</hi>
-		<div class ="container-fluid">
-	 		<div class = "row">
-				<div id="model-container" class="col-md-8"></div> 
-		        <div class = "row">
-	       			<p style ="text-align: center">Controls</p>
-	       			<div class = "col-md-1">
-	           			<div class="row">           
-	           				<select id="n" onchange = 'changel()'>
-	               				<option value = '1' selected>n=1</option>
-	               				<option value = '2' >n=2</option>
-	               				<option value = '3' >n=3</option>
-	               				<option value = '4' >n=4</option>
-	           				</select>
-	           			</div>
-	           			<div class="row">
-	           				<select id="l" onchange= 'changem()'>
-	               				<option value = '0' >l=0</option>
-	           				</select>
-	           			</div>
-	           			<div class="row">
-            				<select id="m">
-	               				<option value = '0'>m=0</option>
-	           				</select>
-	           			</div>         
-	       			</div>
-	       			<div class = "col-md-3">
-	            		<button type="button" onclick = "reload()">Load Orbital</button>
-	            		<p style="font-size:12pt;font-family:Arial;text-align:center" >y-axis scale</p>
-	            		<input type="range" id="chart-slider" name="Resolution" min = "0" max="20" onchange="reloadChart();" >
-	            		<canvas id="myChart"></canvas>
-	          		</div>
-	      		</div>	
-	    	</div>
-	  	</div>
-		<div class = 'row'>
-			<div class = 'col-md-1'><p style ="font-size:12pt;">Instructions: </p></div>
-		  	<div class = 'col-md-3'>
-			  	<p style ="font-size:10pt; font-family:Arial">*Use the Mouse wheel to zoom</p>
-			  	<p style ="font-size:10pt;font-family:Arial">*Click and drag to rotate orbital</p>
-			  	<p style ="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
-			  	<p style ="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
-		  	</div>  	
-		</div>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
-		<script src="js/OrbitControls.js"></script>
-		<script src="js/WaveFunction.js"></script>
+<head>
+    <meta charset=utf-8>
+    <title>Generates view of atomic orbital </title>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+    <link href="https://fonts.googleapis.com/css?family=Bubbler+One|Source+Sans+Pro:600" rel="stylesheet">
+    <link rel="stylesheet" href="css/hydrogen.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
+    <script type="x-shader/x-vertex" id="vertexshader">
+        attribute float alpha; varying float vAlpha; attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vAlpha = alpha; vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size* ( 300.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition; }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentshader">
+        varying float vAlpha; uniform vec3 color; varying vec3 vColor; void main() { gl_FragColor = vec4( color * vColor, vAlpha ); }
+    </script>
+    <script>
+    //Manipulate UI
+    function changel() {
+        console.log("works");
+        $("#l").html("");
+        var n = $("#n").val();
+        for (i = 0; i < n; i++) {
+            $("#l").append("<option value = '" + i + "'>l=" + i + "</option>");
+        }
+        changem();
+    }
 
-			<script>
-			function cubePos1(posArr) {//Creates float arr vertices
-				var positions =new Float32Array(posArr.length*3);
-				for (i = 0; i < posArr.length; i++) {
-					positions[3*i] = (posArr[i][0]);
-					positions[3*i+1]=(posArr[i][1]);
-					positions[3*i+2] =(posArr[i][2]);
-				}
-				return positions;
-			}
-			function cubeCol(posArr) {
-				var colors = new Float32Array(posArr.length*3);
-				for (i = 0; i < posArr.length; i++) {
-					var color = new THREE.Color(posArr[i][4]);
-					colors[3*i] = color.r;
-					colors[3*i+1] = color.g;
-					colors[3*i+2] = color.b;
-				}
-				return colors;
-			}
+    function changem() {
+        $("#m").html("");
+        var l = $("#l").val();
+        for (i = -l; i <= l; i++) {
+            if (i < 0) {
+                $("#m").append("<option value = 'Neg" + Math.abs(i) + "' selected>m=" + i + "</option>");
+            } else if (i == 0) {
+                $("#m").append("<option value = '" + i + "' selected>m=" + i + "</option>");
+            } else {
+                $("#m").append("<option value = 'Pos" + i + "'>m=" + i + "</option>");
+            }
+        }
+    }
+    </script>
+</head>
 
-			function cubeAlpha(posArr){
-				var alphas = new Float32Array(posArr.length);
-				for(i = 0; i < posArr.length; i++){
-					alphas[i] =posArr[i][3];
-				}
-				return alphas;
-			}
+<body style="background:white">
+    <svg id="circular-menu" class="Absolute Center">
+        <defs>
+            <filter id="f1" x="0" y="0" width="200%" height="200%">
+                <feOffset result="offOut" in="SourceGraphic" dx="0" dy="0" />
+                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.5 0" />
+                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="5" />
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+            </filter>
+        </defs>
+        <g filter="url(#f1)">
+            <a href="#">
+                <path id="elem1" d="M 40 0
+           L 60 0
+           A 60 60 0 0 1 29.088577214780226 52.47718242836375
+           L 19 35
+           A 40 40 0 0 0 40 0" fill="#A9B0B7" class="radial-element" />
+            </a>
+            <a href="HydrogenOrbital.html" alt="lol">
+                <path id="elem2" d="M 40 0
+           L 60 0
+           A 60 60 0 0 1 29.088577214780226 52.47718242836375
+           L 19 35
+           A 40 40 0 0 0 40 0" transform="translate(100) rotate(60)" fill="#AC2B37" class="radial-element" />
+            </a>
+            <a href="#">
+                <path id="elem3" d="M 40 0
+           L 60 0
+           A 60 60 0 0 1 29.088577214780226 52.47718242836375
+           L 19 35
+           A 40 40 0 0 0 40 0" fill="#A9B0B7" class="radial-element" />
+            </a>
+        </g>
+    </svg>
+    <div class="container-fluid">
+        <div class="row" style="height:70px; background-color:#000000; border-style: hidden hidden solid hidden;"></div>
+        <div class="row">
+            <h1 align="center"> The Hydrogen Atom</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Erwin_Schr%C3%B6dinger_%281933%29.jpg/220px-Erwin_Schr%C3%B6dinger_%281933%29.jpg" class="rounded-circle" style="height:200px">
+            </div>
+            <div class="col-lg-10">
+                <h2 align="center">Schrodinger Equation</h2>
+            </div>
+        </div>
+        <div class="row" style="background-color:black">
+            <div id="model-container" class="col-lg-8"></div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <p id="radial_Equation">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <p style="text-align: center">Controls</p>
+                        <div class="row">
+                            <select class="form-control" id="n" onchange='changel()'>
+                                <option value='1' selected>n=1</option>
+                                <option value='2'>n=2</option>
+                                <option value='3'>n=3</option>
+                                <option value='4'>n=4</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <select class="form-control" id="l" onchange='changem()'>
+                                <option value='0'>l=0</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <select class="form-control" id="m">
+                                <option value='0'>m=0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">
+                            <button type="button" onclick="reload()">Load Orbital</button>
+                        </div>
+                        <div class="row">
+                            <p style="font-size:12pt;font-family:Arial;text-align:center">y-axis scale</p>
+                        </div>
+                        <div class="row">
+                            <input type="range" id="chart-slider" name="Resolution" min="0" max="20" onchange="reloadChart();">
+                        </div>
+                        <div class="row">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row' style="background-color:black">
+            <div class='col-md-2'>
+                <p style="font-size:12pt;">Instructions: </p>
+            </div>
+            <div class='col-md-3'>
+                <p style="font-size:10pt; font-family:Arial">*Use the Mouse wheel to zoom</p>
+                <p style="font-size:10pt;font-family:Arial">*Click and drag to rotate orbital</p>
+                <p style="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
+                <p style="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
+            </div>
+        </div>
+    </div>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/WaveFunction.js"></script>
+    <script>
+    function cubePos1(posArr) { //Creates float arr vertices
+        var positions = new Float32Array(posArr.length * 3);
+        for (i = 0; i < posArr.length; i++) {
+            positions[3 * i] = (posArr[i][0]);
+            positions[3 * i + 1] = (posArr[i][1]);
+            positions[3 * i + 2] = (posArr[i][2]);
+        }
+        return positions;
+    }
 
-			function cubePos(posArr) {//Creates THREE vector from array of vectors
-				var cubeVec =[];
-				for (i = 0; i < posArr.length; i++) {
-					cubeVec.push([new THREE.Vector3(posArr[i][0],posArr[i][1],posArr[i][2]),posArr[i][3],posArr[i][4]]);
-				}
-				return cubeVec;
-			}
-			function cubeSize(resolution,posArr) {
-				var sizes =new Float32Array(posArr.length);
-				for(var i = 0 ; i<posArr.length; i++){
-					sizes[i] = 2.5*range/resolution;
-				}
-				return sizes;
-			}		
-			var modelContainer=document.getElementById("model-container");
-			modelContainer.style.width = 0.65*window.innerWidth+'px';
-			modelContainer.style.height = 0.60*window.innerHeight+'px';
+    function cubeCol(posArr) {
+        var colors = new Float32Array(posArr.length * 3);
+        for (i = 0; i < posArr.length; i++) {
+            var color = new THREE.Color(posArr[i][4]);
+            colors[3 * i] = color.r;
+            colors[3 * i + 1] = color.g;
+            colors[3 * i + 2] = color.b;
+        }
+        return colors;
+    }
 
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000 );
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize(modelContainer.offsetWidth-5,modelContainer.offsetHeight-5);
-			modelContainer.appendChild( renderer.domElement );
-			console.log(renderer.domElement)
+    function cubeAlpha(posArr) {
+        var alphas = new Float32Array(posArr.length);
+        for (i = 0; i < posArr.length; i++) {
+            alphas[i] = posArr[i][3];
+        }
+        return alphas;
+    }
 
+    function cubePos(posArr) { //Creates THREE vector from array of vectors
+        var cubeVec = [];
+        for (i = 0; i < posArr.length; i++) {
+            cubeVec.push([new THREE.Vector3(posArr[i][0], posArr[i][1], posArr[i][2]), posArr[i][3], posArr[i][4]]);
+        }
+        return cubeVec;
+    }
 
-			uniforms = {
-				color:     { type: "c", value: new THREE.Color( 0xffffff ) }
-			};
-			var shaderMaterial = new THREE.ShaderMaterial( {
-				uniforms:       uniforms,
-				vertexShader:   document.getElementById( 'vertexshader' ).textContent,
-				fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-				blending:       THREE.AdditiveBlending,
-				depthTest:      false,
-				transparent:    true
-			});
+    function cubeSize(resolution, posArr) {
+        var sizes = new Float32Array(posArr.length);
+        for (var i = 0; i < posArr.length; i++) {
+            sizes[i] = 2.5 * range / resolution;
+        }
+        return sizes;
+    }
+    var modelContainer = document.getElementById("model-container");
+    modelContainer.style.width = 0.65 * window.innerWidth + 'px';
+    modelContainer.style.height = 0.60 * window.innerHeight + 'px';
 
-
-
-
-			var light =  new THREE.PointLight(0xffffff);
-			light.position.copy(new THREE.Vector3(0,0,30));
-			scene.add(light);
-
-			var resolution = 50;
-			var range = 8;
-			var n =1;
-			var l =0;
-			var cameraOffset =10+6*Math.pow(n,2)+2*l;
-			var posArr =simpsonIntegrate(n1l0m0,-range,range,-range,range,-range,range,resolution);
-
-			var geometry = new THREE.BufferGeometry();
-
-			
-			geometry.addAttribute( 'size',new THREE.BufferAttribute(cubeSize(resolution,posArr),1));
-			geometry.addAttribute( 'position', new THREE.BufferAttribute( cubePos1(posArr), 3 ) );
-			geometry.addAttribute( 'customColor', new THREE.BufferAttribute( cubeCol(posArr), 3 ) );
-			geometry.addAttribute('alpha',new THREE.BufferAttribute(cubeAlpha(posArr),1));
-
-			var particleSystem = new THREE.Points(
-				geometry,shaderMaterial);
-
-
-			scene.add(particleSystem);
-			var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1,10,10),new THREE.MeshBasicMaterial({color:0xffff00, transparent:true}));
-
-			scene.add(nucleus);
-
-			camera.position.z = 16;
-
-			controls = new THREE.OrbitControls( camera,renderer.domElement);
-			controls.enableDamping = true;
-			controls.dampingFactor = 0.25;
-			controls.enableZoom = true;
-			controls.noPan = true;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(modelContainer.offsetWidth - 5, modelContainer.offsetHeight - 5);
+    modelContainer.appendChild(renderer.domElement);
+    console.log(renderer.domElement)
 
 
-			window.addEventListener( 'resize', onResize, false );
-
-			function onResize() {
-				modelContainer.style.height = 0.60*window.innerHeight+'px';
-				modelContainer.style.width = 0.65*window.innerWidth+'px';
-				camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize( modelContainer.offsetWidth-5, modelContainer.offsetHeight-5 );
-				render();
-			}
-
-			function animate() {
-				requestAnimationFrame( animate );
-				controls.update();
-				light.position.copy(camera.position);
-				render();
-			}
-			function render() {
-				renderer.render( scene, camera );
-			}
-			animate();
-			
-			function reload() {
-				console.log("works");
-				n = $("#n option:selected").val();
-				l = $("#l option:selected").val();
-
-				cameraOffset =10+6*Math.pow(n,2)+2*l;
-				camera.position.z = cameraOffset;
-				camera.position.x = 0;
-				camera.position.y = 0;
-
-				var waveFunc="n"+n+"l"+$("#l option:selected").val()+"m"+$("#m option:selected").val();
+    uniforms = {
+        color: { type: "c", value: new THREE.Color(0xffffff) }
+    };
+    var shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: document.getElementById('vertexshader').textContent,
+        fragmentShader: document.getElementById('fragmentshader').textContent,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
+        transparent: true
+    });
 
 
-				range = 5+4*Math.pow(n,2)+5*l
-				resolution =40+10*n;
 
 
-				var posArr = simpsonIntegrate(eval(waveFunc),-range,range,-range,range,-range,range,resolution);
+    var light = new THREE.PointLight(0xffffff);
+    light.position.copy(new THREE.Vector3(0, 0, 30));
+    scene.add(light);
 
-				geometry.addAttribute( 'size',new THREE.BufferAttribute(cubeSize(resolution,posArr),1));
-				geometry.addAttribute( 'position', new THREE.BufferAttribute( cubePos1(posArr), 3 ) );
-				geometry.addAttribute( 'customColor', new THREE.BufferAttribute( cubeCol(posArr), 3 ) );
-				geometry.addAttribute('alpha',new THREE.BufferAttribute(cubeAlpha(posArr),1));
+    var resolution = 50;
+    var range = 8;
+    var n = 1;
+    var l = 0;
+    var cameraOffset = 10 + 11 * Math.pow(n, 2) + 2 * l;
+    var posArr = simpsonIntegrate(n1l0m0, -range, range, -range, range, -range, range, resolution);
 
-				var particleSystem = new THREE.Points(
-					geometry,shaderMaterial);
-				camera.position.z = cameraOffset;
-				camera.position.x = 0;
-				camera.position.y = 0;
+    var geometry = new THREE.BufferGeometry();
 
-				reloadChart();
-			}
-			function reloadChart(){
-				yscale = 21-parseInt(document.getElementById('chart-slider').value);
-				ctxChart = document.getElementById('myChart').getContext("2d");
-				ctxChart.clearRect(0,0,300, 200);
-				myGraph = new Graph({
-			        canvasId: 'myChart',
-			        minX: -range,
-			        minY: -yscale,
-			        maxX: range,
-			        maxY: yscale,//$('chart-slider').val(),
-			        unitsPerTick: Math.round(range/5)
-	      		});
-		      	myGraph.drawEquation(eval('r'+n+l), 'red', 2);
-			}
-		</script>
-		<script>
-		//controls graph
-		var ctxChart = document.getElementById('myChart').getContext("2d");
-	      function Graph(config) {
-	        // user defined properties
-	        this.canvas = document.getElementById('myChart');
-	        this.minX = config.minX;
-	        this.minY = config.minY;
-	        this.maxX = config.maxX;
-	        this.maxY = config.maxY;
-	        this.unitsPerTick = config.unitsPerTick;
 
-	        // constants
-	        this.axisColor = '#ffffff';
-	        this.font = '8pt Calibri';
-	        this.tickSize = 5;
+    geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
+    geometry.addAttribute('position', new THREE.BufferAttribute(cubePos1(posArr), 3));
+    geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
+    geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
 
-	        // relationships
-	        this.context = this.canvas.getContext('2d');
-	        this.rangeX = this.maxX - this.minX;
-	        this.rangeY = this.maxY - this.minY;
-	        this.unitX = this.canvas.width / this.rangeX;
-	        this.unitY = this.canvas.height / this.rangeY;
-	        this.centerY = Math.round(Math.abs(this.minY / this.rangeY) * this.canvas.height);
-	        this.centerX = Math.round(Math.abs(this.minX / this.rangeX) * this.canvas.width);
-	        this.iteration = (this.maxX - this.minX) / 1000;
-	        this.scaleX = this.canvas.width / this.rangeX;
-	        this.scaleY = this.canvas.height / this.rangeY;
+    var particleSystem = new THREE.Points(
+        geometry, shaderMaterial);
 
-	        // draw x and y axis
-	        this.drawXAxis();
-	        this.drawYAxis();
-	      }
 
-	      Graph.prototype.drawXAxis = function() {
-	        var context = this.context;
-	        context.save();
-	        context.beginPath();
-	        context.moveTo(0, this.centerY);
-	        context.lineTo(this.canvas.width, this.centerY);
-	        context.strokeStyle = this.axisColor;
-	        context.lineWidth = 1;
-	        context.stroke();
+    scene.add(particleSystem);
+    var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true }));
 
-	        // draw tick marks
-	        var xPosIncrement = this.unitsPerTick * this.unitX;
-	        var xPos, unit;
-	        context.font = this.font;
-	        context.fillStyle = 'blue';
-	        context.textAlign = 'center';
-	        context.textBaseline = 'top';
+    scene.add(nucleus);
 
-	        // draw left tick marks
-	        xPos = this.centerX - xPosIncrement;
-	        unit = -1 * this.unitsPerTick;
-	        while(xPos > 0) {
-	          context.moveTo(xPos, this.centerY - this.tickSize / 2);
-	          context.lineTo(xPos, this.centerY + this.tickSize / 2);
-	          context.stroke();
-	          //context.fillText(unit, xPos, this.centerY + this.tickSize / 2 + 3);
-	          unit -= this.unitsPerTick;
-	          xPos = Math.round(xPos - xPosIncrement);
-	        }
+    camera.position.z = 16;
 
-	        // draw right tick marks
-	        xPos = this.centerX + xPosIncrement;
-	        unit = this.unitsPerTick;
-	        while(xPos < this.canvas.width) {
-	          context.moveTo(xPos, this.centerY - this.tickSize / 2);
-	          context.lineTo(xPos, this.centerY + this.tickSize / 2);
-	          context.stroke();
-	          //context.fillText(unit, xPos, this.centerY + this.tickSize / 2 + 3);
-	          unit += this.unitsPerTick;
-	          xPos = Math.round(xPos + xPosIncrement);
-	        }
-	        context.restore();
-	      };
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+    controls.enabePan = false;
 
-	      Graph.prototype.drawYAxis = function() {
-	        var context = this.context;
-	        context.save();
-	        context.beginPath();
-	        context.moveTo(this.centerX, 0);
-	        context.lineTo(this.centerX, this.canvas.height);
-	        context.strokeStyle = this.axisColor;
-	        context.lineWidth = 1;
-	        context.stroke();
 
-	        // draw tick marks
-	        var yPosIncrement = this.unitsPerTick * this.unitY;
-	        var yPos, unit;
-	        context.font = this.font;
-	        context.textAlign = 'right';
-	        context.textBaseline = 'middle';
+    window.addEventListener('resize', onResize, false);
 
-	        // draw top tick marks
-	        yPos = this.centerY - yPosIncrement;
-	        unit = this.unitsPerTick;
-	        while(yPos > 0) {
-	          context.moveTo(this.centerX - this.tickSize / 2, yPos);
-	          context.lineTo(this.centerX + this.tickSize / 2, yPos);
-	          context.stroke();
-	          //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
-	          unit += this.unitsPerTick;
-	          yPos = Math.round(yPos - yPosIncrement);
-	        }
+    function onResize() {
+        modelContainer.style.height = 0.60 * window.innerHeight + 'px';
+        modelContainer.style.width = 0.65 * window.innerWidth + 'px';
+        camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(modelContainer.offsetWidth - 5, modelContainer.offsetHeight - 5);
+        render();
+    }
 
-	        // draw bottom tick marks
-	        yPos = this.centerY + yPosIncrement;
-	        unit = -1 * this.unitsPerTick;
-	        while(yPos < this.canvas.height) {
-	          context.moveTo(this.centerX - this.tickSize / 2, yPos);
-	          context.lineTo(this.centerX + this.tickSize / 2, yPos);
-	          context.stroke();
-	          //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
-	          unit -= this.unitsPerTick;
-	          yPos = Math.round(yPos + yPosIncrement);
-	        }
-	        context.restore();
-	      };
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        light.position.copy(camera.position);
+        render();
+    }
 
-	      Graph.prototype.drawEquation = function(equation, color, thickness) {
-	        var context = this.context;
-	        context.save();
-	        context.save();
-	        this.transformContext();
+    function render() {
+        renderer.render(scene, camera);
+    }
+    animate();
 
-	        context.beginPath();
-	        context.moveTo(this.minX, equation(this.minX,0,0));
+    function reload() {
+        console.log("works");
+        n = $("#n option:selected").val();
+        l = $("#l option:selected").val();
 
-	        for(var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
-	          context.lineTo(x, equation(x,0,0));
-	        }
+        cameraOffset = 10 + 6 * Math.pow(n, 2) + 2 * l;
+        camera.position.z = cameraOffset;
+        camera.position.x = 0;
+        camera.position.y = 0;
 
-	        context.restore();
-	        context.lineJoin = 'round';
-	        context.lineWidth = thickness;
-	        context.strokeStyle = color;
-	        context.stroke();
-	        context.restore();
-	      };
+        var waveFunc = "n" + n + "l" + $("#l option:selected").val() + "m" + $("#m option:selected").val();
 
-	      Graph.prototype.transformContext = function() {
-	        var context = this.context;
 
-	        // move context to center of canvas
-	        this.context.translate(this.centerX, this.centerY);
+        range = 5 + 4 * Math.pow(n, 2) + 5 * l
+        resolution = 40 + 10 * n;
 
-	        /*
-	         * stretch grid to fit the canvas window, and
-	         * invert the y scale so that that increments
-	         * as you move upwards
-	         */
-	        context.scale(this.scaleX, -this.scaleY);
-	      };
-	      var myGraph = new Graph({
-	        canvasId: 'myChart',
-	        minX: -range,
-	        minY: -11,
-	        maxX: range,
-	        maxY: 11,
-	        unitsPerTick: Math.round(range/5)
-	      });
-	      myGraph.drawEquation(r10, 'red', 2);
-    	</script>
-	</body>
+
+        var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
+
+        geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
+        geometry.addAttribute('position', new THREE.BufferAttribute(cubePos1(posArr), 3));
+        geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
+        geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
+
+        var particleSystem = new THREE.Points(
+            geometry, shaderMaterial);
+        camera.position.z = cameraOffset;
+        camera.position.x = 0;
+        camera.position.y = 0;
+
+        reloadChart();
+    }
+
+    function reloadChart() {
+        yscale = 21 - parseInt(document.getElementById('chart-slider').value);
+        ctxChart = document.getElementById('myChart').getContext("2d");
+        ctxChart.clearRect(0, 0, 300, 200);
+        myGraph = new Graph({
+            canvasId: 'myChart',
+            minX: -range,
+            minY: -yscale,
+            maxX: range,
+            maxY: yscale, //$('chart-slider').val(),
+            unitsPerTick: Math.round(range / 5)
+        });
+        myGraph.drawEquation(
+        	(x,y,z)=>{
+        	var a = eval('r' + n + l);
+        	var r = Math.sqrt(Math.pow(x/2,2)+Math.pow(y/2,2)+Math.pow(z/2,2));
+        	return a(x,y,z)*Math.pow(r,parseInt(l));
+        }
+        , 'red', 2);
+    }
+    </script>
+    <script>
+    //controls graph
+    var ctxChart = document.getElementById('myChart').getContext("2d");
+
+    function Graph(config) {
+        // user defined properties
+        this.canvas = document.getElementById('myChart');
+        this.minX = config.minX;
+        this.minY = config.minY;
+        this.maxX = config.maxX;
+        this.maxY = config.maxY;
+        this.unitsPerTick = config.unitsPerTick;
+
+        // constants
+        this.axisColor = '#ffffff';
+        this.font = '8pt Calibri';
+        this.tickSize = 5;
+
+        // relationships
+        this.context = this.canvas.getContext('2d');
+        this.rangeX = this.maxX - this.minX;
+        this.rangeY = this.maxY - this.minY;
+        this.unitX = this.canvas.width / this.rangeX;
+        this.unitY = this.canvas.height / this.rangeY;
+        this.centerY = Math.round(Math.abs(this.minY / this.rangeY) * this.canvas.height);
+        this.centerX = Math.round(Math.abs(this.minX / this.rangeX) * this.canvas.width);
+        this.iteration = (this.maxX - this.minX) / 1000;
+        this.scaleX = this.canvas.width / this.rangeX;
+        this.scaleY = this.canvas.height / this.rangeY;
+
+        // draw x and y axis
+        this.drawXAxis();
+        this.drawYAxis();
+    }
+
+    Graph.prototype.drawXAxis = function() {
+        var context = this.context;
+        context.save();
+        context.beginPath();
+        context.moveTo(0, this.centerY);
+        context.lineTo(this.canvas.width, this.centerY);
+        context.strokeStyle = this.axisColor;
+        context.lineWidth = 1;
+        context.stroke();
+
+        // draw tick marks
+        var xPosIncrement = this.unitsPerTick * this.unitX;
+        var xPos, unit;
+        context.font = this.font;
+        context.fillStyle = 'blue';
+        context.textAlign = 'center';
+        context.textBaseline = 'top';
+
+        // draw left tick marks
+        xPos = this.centerX - xPosIncrement;
+        unit = -1 * this.unitsPerTick;
+        while (xPos > 0) {
+            context.moveTo(xPos, this.centerY - this.tickSize / 2);
+            context.lineTo(xPos, this.centerY + this.tickSize / 2);
+            context.stroke();
+            //context.fillText(unit, xPos, this.centerY + this.tickSize / 2 + 3);
+            unit -= this.unitsPerTick;
+            xPos = Math.round(xPos - xPosIncrement);
+        }
+
+        // draw right tick marks
+        xPos = this.centerX + xPosIncrement;
+        unit = this.unitsPerTick;
+        while (xPos < this.canvas.width) {
+            context.moveTo(xPos, this.centerY - this.tickSize / 2);
+            context.lineTo(xPos, this.centerY + this.tickSize / 2);
+            context.stroke();
+            //context.fillText(unit, xPos, this.centerY + this.tickSize / 2 + 3);
+            unit += this.unitsPerTick;
+            xPos = Math.round(xPos + xPosIncrement);
+        }
+        context.restore();
+    };
+
+    Graph.prototype.drawYAxis = function() {
+        var context = this.context;
+        context.save();
+        context.beginPath();
+        context.moveTo(this.centerX, 0);
+        context.lineTo(this.centerX, this.canvas.height);
+        context.strokeStyle = this.axisColor;
+        context.lineWidth = 1;
+        context.stroke();
+
+        // draw tick marks
+        var yPosIncrement = this.unitsPerTick * this.unitY;
+        var yPos, unit;
+        context.font = this.font;
+        context.textAlign = 'right';
+        context.textBaseline = 'middle';
+
+        // draw top tick marks
+        yPos = this.centerY - yPosIncrement;
+        unit = this.unitsPerTick;
+        while (yPos > 0) {
+            context.moveTo(this.centerX - this.tickSize / 2, yPos);
+            context.lineTo(this.centerX + this.tickSize / 2, yPos);
+            context.stroke();
+            //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
+            unit += this.unitsPerTick;
+            yPos = Math.round(yPos - yPosIncrement);
+        }
+
+        // draw bottom tick marks
+        yPos = this.centerY + yPosIncrement;
+        unit = -1 * this.unitsPerTick;
+        while (yPos < this.canvas.height) {
+            context.moveTo(this.centerX - this.tickSize / 2, yPos);
+            context.lineTo(this.centerX + this.tickSize / 2, yPos);
+            context.stroke();
+            //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
+            unit -= this.unitsPerTick;
+            yPos = Math.round(yPos + yPosIncrement);
+        }
+        context.restore();
+    };
+
+    Graph.prototype.drawEquation = function(equation, color, thickness) {
+        var context = this.context;
+        context.save();
+        context.save();
+        this.transformContext();
+
+        context.beginPath();
+        context.moveTo(this.minX, equation(this.minX, 0, 0));
+
+        for (var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
+            context.lineTo(x, equation(x, 0, 0));
+        }
+
+        context.restore();
+        context.lineJoin = 'round';
+        context.lineWidth = thickness;
+        context.strokeStyle = color;
+        context.stroke();
+        context.restore();
+    };
+
+    Graph.prototype.transformContext = function() {
+        var context = this.context;
+
+        // move context to center of canvas
+        this.context.translate(this.centerX, this.centerY);
+
+        /*
+         * stretch grid to fit the canvas window, and
+         * invert the y scale so that that increments
+         * as you move upwards
+         */
+        context.scale(this.scaleX, -this.scaleY);
+    };
+    var myGraph = new Graph({
+        canvasId: 'myChart',
+        minX: -range,
+        minY: -11,
+        maxX: range,
+        maxY: 11,
+        unitsPerTick: Math.round(range / 5)
+    });
+    myGraph.drawEquation(r10, 'red', 2);
+    </script>
+</body>
+
 </html>
