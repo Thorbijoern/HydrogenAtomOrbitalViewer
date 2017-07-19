@@ -318,9 +318,8 @@
     }
 
     function reloadChart() {
-        yscale = 21 - parseInt(document.getElementById('chart-slider').value);
-        ctxChart = document.getElementById('myChart').getContext("2d");
-        ctxChart.clearRect(0, 0, 300, 200);
+        yscale = 21 - parseInt($('#chart-slider').get(0).value);
+        ctxChart = $("#myChart").get(0).getContext("2d").clearRect(0, 0, 300, 200);
         myGraph = new Graph({
             canvasId: 'myChart',
             minX: -range,
@@ -338,15 +337,14 @@
         , 'red', 2);
     }
     //controls graph
-    var ctxChart = document.getElementById('myChart').getContext("2d");
 
     
     var myGraph = new Graph({
         canvasId: 'myChart',
         minX: -range,
-        minY: -11,
+        minY: -2,
         maxX: range,
-        maxY: 11,
+        maxY: 2,
         unitsPerTick: Math.round(range / 5)
     });
     myGraph.drawEquation(r10, 'red', 2);

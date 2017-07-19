@@ -115,20 +115,36 @@ function Graph(config) {
         }
         context.restore();
     };
-
+    Graph.prototype.update = function(minY,maxY){
+        this.minY = minY;
+        this.maxY = maxY;
+        this.rangeY = this.maxY - this.minY;
+        this.unitY = this.canvas.height / this.rangeY;
+        this.centerY = Math.round(Math.abs(this.minY / this.rangeY) * this.canvas.height);
+        this.scaleY = this.canvas.height / this.rangeY;        
+    };
     Graph.prototype.drawEquation = function(equation, color, thickness) {
         var context = this.context;
+        var mY = 0;
+        var MY = 0;
+        let points = [];
+        for (var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
+            let temp =  equation(x, 0, 0);
+            if(temp < mY)
+                mY = temp;
+            if(temp > MY)
+                MY = temp;
+            points.push([x,temp]);
+        }
+        this.update(-MY, MY);
         context.save();
         context.save();
         this.transformContext();
 
         context.beginPath();
         context.moveTo(this.minX, equation(this.minX, 0, 0));
-
-        for (var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
-            context.lineTo(x, equation(x, 0, 0));
-        }
-
+        
+        points.forEach(e=>context.lineTo(e[0], e[1]));
         context.restore();
         context.lineJoin = 'round';
         context.lineWidth = thickness;

@@ -130,7 +130,6 @@
 	        for(var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
 	          context.lineTo(x, equation(x,0,0));
 	        }
-
 	        context.restore();
 	        context.lineJoin = 'round';
 	        context.lineWidth = thickness;
