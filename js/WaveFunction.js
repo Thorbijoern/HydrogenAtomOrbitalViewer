@@ -42,7 +42,7 @@
 			}
 			//radial probability functions
 			function r(x,y,z){
-				return Math.sqrt(Math.pow(x/2,2)+Math.pow(y/2,2)+Math.pow(z/2,2));
+				return Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
 			}
 			function r10(x,y,z){
 				var R = r(x,y,z);
@@ -62,11 +62,11 @@
 			}
 			function r31(x,y,z){
 				var R =r(x,y,z);
-				return (8/(Math.sqrt(6)*27))*(6-R)*Math.exp(-R/3);
+				return R*(8/(Math.sqrt(6)*27))*(6-R)*Math.exp(-R/3);
 			}
 			function r32(x,y,z){
 				var R =r(x,y,z);
-				return (4/(81*Math.sqrt(30)))*Math.exp(-R/3);
+				return Math.pow(R,2)*(4/(81*Math.sqrt(30)))*Math.exp(-R/3);
 			}
 			function r40(x,y,z){
 				var R =r(x,y,z);
@@ -74,15 +74,15 @@
 			}
 			function r41(x,y,z){
 				var R = r(x,y,z);
-				return (Math.sqrt(5)/(16*Math.sqrt(3)))*(1-R/4+Math.pow(R,2)/80)*Math.exp(-R/4);
+				return R*(Math.sqrt(5)/(16*Math.sqrt(3)))*(1-R/4+Math.pow(R,2)/80)*Math.exp(-R/4);
 			}
 			function r42(x,y,z){
 				var R = r(x,y,z);
-				return (1-R/12)*Math.exp(-R/4)/(64*Math.sqrt(5));
+				return Math.pow(R,2)*(1-R/12)*Math.exp(-R/4)/(64*Math.sqrt(5));
 			}
 			function r43(x,y,z){
 				var R = r(x,y,z);
-				return Math.exp(-R/4)/(Math.sqrt(35)*768);
+				return Math.pow(R,3)*Math.exp(-R/4)/(Math.sqrt(35)*768);
 			}
 			//Wave functions go here
 			function n1l0m0(x,y,z){
@@ -119,13 +119,13 @@
 				return x*z*r32(x,y,z);
 			}
 			function n3l2m0(x,y,z){
-				return (3*Math.pow(z/2,2)-Math.pow(r(x,y,z),2))*r32(x,y,z);
+				return (3*Math.pow(z,2)-Math.pow(r(x,y,z),2))*r32(x,y,z);
 			}
 			function n3l2mPos1(x,y,z){
 				return y*z*r32(x,y,z);
 			}
 			function n3l2mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*r32(x,y,z);
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*r32(x,y,z);
 			}
 			function n4l0m0(x,y,z){
 				return 2.1*r40(x,y,z)/1.2;
@@ -146,35 +146,35 @@
 				return x*z*r42(x,y,z);
 			}
 			function n4l2m0(x,y,z){
-				return (3*Math.pow(z/2,2)-Math.pow(r(x,y,z),2))*r42(x,y,z);
+				return (3*Math.pow(z,2)-Math.pow(r(x,y,z),2))*r42(x,y,z);
 			}
 			function n4l2mPos1(x,y,z){
 				return y*z*r42(x,y,z);
 			}
 			function n4l2mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*r42(x,y,z);
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*r42(x,y,z);
 			}
 			function n4l3mNeg3(x,y,z){
-				return (Math.pow(x/2,2)-Math.pow(y/2,2))*r43(x,y,z);
+				return (Math.pow(x,2)-Math.pow(y,2))*r43(x,y,z);
 			}
 			function n4l3mNeg3(x,y,z){
-				return 2*(Math.pow(x/2,2)-3*Math.pow(y/2,2))*x*r43(x,y,z)/1.2;
+				return 2*(Math.pow(x,2)-3*Math.pow(y,2))*x*r43(x,y,z)/1.2;
 			}
 			function n4l3mNeg2(x,y,z){
 				return x*y*z*r43(x,y,z);
 			}
 			function n4l3mNeg1(x,y,z){
-				return x*(5*Math.pow(z/2,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
+				return x*(5*Math.pow(z,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
 			}
 			function n4l3m0(x,y,z){
-				return z*(5*Math.pow(z/2,2)-3*Math.pow(r(x,y,z),2))*r43(x,y,z)/1.5;
+				return z*(5*Math.pow(z,2)-3*Math.pow(r(x,y,z),2))*r43(x,y,z)/1.5;
 			}
 			function n4l3mPos1(x,y,z){
-				return y*(5*Math.pow(z/2,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
+				return y*(5*Math.pow(z,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
 			}
 			function n4l3mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*z*r43(x,y,z);				
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*z*r43(x,y,z);				
 			}
 			function n4l3mPos3(x,y,z){
-				return 2*(3*Math.pow(x/2,2)-Math.pow(y/2,2))*y*r43(x,y,z)/1.2;
+				return 2*(3*Math.pow(x,2)-Math.pow(y,2))*y*r43(x,y,z)/1.2;
 			}
