@@ -109,8 +109,9 @@ button {
     transform:translate(100px, 0px) rotate(120deg) scale(1.15)
 }
 #myChart {
-	width: 300px;
+	width: 95%;
 	height: 200px;
+  border-color: #ffffff;
 }
 #model-container {
 	border-style: solid;
@@ -123,10 +124,6 @@ button {
 }
 #model-container:active {
 	/*cursor: url(http://www.kasiryapi.com/masterslider/style/grabbing.png), default !important;*/
-}
-#myChart {
-	border-style: solid;
-	border-color: #ffffff;
 }
 #equation{
   color:white;

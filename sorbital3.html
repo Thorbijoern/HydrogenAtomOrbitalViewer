@@ -85,13 +85,13 @@
     </svg>
     <div class="container-fluid">
         <div class="row" style='height:400px; background-position: 50% 50%; background-size: 50% 100; background-color:gray; background-image: url("http://www.clker.com/cliparts/b/8/c/0/12065573891491312817IncessantBlabber_Stylized_atom.svg");background-repeat:no-repeat;'>
-        <div class="col-lg-3">     	
-        </div>
+            <div class="col-lg-3">
+            </div>
             <div class="col-lg-6" style="padding-top: 150px">
                 <h1 class="blend-title" align="center"> The Hydrogen Atom</h1>
             </div>
-            <div class="col-lg-3">     	
-        </div>
+            <div class="col-lg-3">
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-2">
@@ -105,9 +105,6 @@
         <div class="row" style="background-color:black">
             <div id="model-container" class="col-lg-8"></div>
             <div class="col-lg-4">
-                <div class="row">
-                    <p id="equation">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
-                </div>
                 <div class="row">
                     <div class="col-lg-3">
                         <p style="text-align: center">Controls</p>
@@ -140,10 +137,10 @@
                         <div class="row">
                             <input type="range" id="chart-slider" name="Resolution" min="0" max="20" onchange="reloadChart();">
                         </div>
-                        <div class="row">
-                            <canvas id="myChart"></canvas>
-                        </div>
                     </div>
+                </div>
+                <div class="row">
+                    <canvas id="myChart" style="width: 95%"></canvas>
                 </div>
             </div>
         </div>
@@ -156,6 +153,9 @@
                 <p style="font-size:10pt;font-family:Arial">*Click and drag to rotate orbital</p>
                 <p style="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
                 <p style="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
+            </div>
+            <div class="col-md-7">
+                <p id="equation">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
             </div>
         </div>
     </div>
@@ -334,7 +334,7 @@
     }
 
     function reloadChart() {
-        $("#myChart").get(0).getContext("2d").clearRect(0, 0, 300, 200);
+        $("#myChart").get(0).getContext("2d").clearRect(0, 0, $('#myChart').width(), $('#myChart').height());
         myGraph = new Graph({
             canvasId: 'myChart',
             minX: 0,
