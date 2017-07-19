@@ -1,6 +1,6 @@
 function Graph(config) {
         // user defined properties
-        this.canvas = document.getElementById('myChart');
+        this.canvas = document.getElementById(config.canvasId);
         this.minX = config.minX;
         this.minY = config.minY;
         this.maxX = config.maxX;
@@ -83,36 +83,6 @@ function Graph(config) {
         context.lineWidth = 1;
         context.stroke();
 
-        // draw tick marks
-        var yPosIncrement = this.unitsPerTick * this.unitY;
-        var yPos, unit;
-        context.font = this.font;
-        context.textAlign = 'right';
-        context.textBaseline = 'middle';
-
-        // draw top tick marks
-        yPos = this.centerY - yPosIncrement;
-        unit = this.unitsPerTick;
-        while (yPos > 0) {
-            context.moveTo(this.centerX - this.tickSize / 2, yPos);
-            context.lineTo(this.centerX + this.tickSize / 2, yPos);
-            context.stroke();
-            //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
-            unit += this.unitsPerTick;
-            yPos = Math.round(yPos - yPosIncrement);
-        }
-
-        // draw bottom tick marks
-        yPos = this.centerY + yPosIncrement;
-        unit = -1 * this.unitsPerTick;
-        while (yPos < this.canvas.height) {
-            context.moveTo(this.centerX - this.tickSize / 2, yPos);
-            context.lineTo(this.centerX + this.tickSize / 2, yPos);
-            context.stroke();
-            //context.fillText(unit, this.centerX - this.tickSize / 2 - 3, yPos);
-            unit -= this.unitsPerTick;
-            yPos = Math.round(yPos + yPosIncrement);
-        }
         context.restore();
     };
     Graph.prototype.update = function(minY,maxY){

@@ -54,7 +54,7 @@
 			}
 			function r21(x,y,z){
 				var R = r(x,y,z);
-				return Math.exp(-R/2)/Math.sqrt(24);
+				return R*Math.exp(-R/2)/Math.sqrt(24);
 			}
 			function r30(x,y,z){
 				var R =r(x,y,z);
@@ -62,11 +62,11 @@
 			}
 			function r31(x,y,z){
 				var R =r(x,y,z);
-				return (8/(Math.sqrt(6)*27))*(6-R)*Math.exp(-R/3);
+				return R*(8/(Math.sqrt(6)*27))*(6-R)*Math.exp(-R/3);
 			}
 			function r32(x,y,z){
 				var R =r(x,y,z);
-				return (4/(81*Math.sqrt(30)))*Math.exp(-R/3);
+				return Math.pow(R,2)*(4/(81*Math.sqrt(30)))*Math.exp(-R/3);
 			}
 			function r40(x,y,z){
 				var R =r(x,y,z);
@@ -74,15 +74,15 @@
 			}
 			function r41(x,y,z){
 				var R = r(x,y,z);
-				return (Math.sqrt(5)/(16*Math.sqrt(3)))*(1-R/4+Math.pow(R,2)/80)*Math.exp(-R/4);
+				return R*(Math.sqrt(5)/(16*Math.sqrt(3)))*(1-R/4+Math.pow(R,2)/80)*Math.exp(-R/4);
 			}
 			function r42(x,y,z){
 				var R = r(x,y,z);
-				return (1-R/12)*Math.exp(-R/4)/(64*Math.sqrt(5));
+				return Math.pow(R,2)*(1-R/12)*Math.exp(-R/4)/(64*Math.sqrt(5));
 			}
 			function r43(x,y,z){
 				var R = r(x,y,z);
-				return Math.exp(-R/4)/(Math.sqrt(35)*768);
+				return Math.pow(R,3)*Math.exp(-R/4)/(Math.sqrt(35)*768);
 			}
 			//Wave functions go here
 			function n1l0m0(x,y,z){
