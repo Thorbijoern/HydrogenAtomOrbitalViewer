@@ -42,7 +42,7 @@
 			}
 			//radial probability functions
 			function r(x,y,z){
-				return Math.sqrt(Math.pow(x/2,2)+Math.pow(y/2,2)+Math.pow(z/2,2));
+				return Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
 			}
 			function r10(x,y,z){
 				var R = r(x,y,z);
@@ -54,7 +54,7 @@
 			}
 			function r21(x,y,z){
 				var R = r(x,y,z);
-				return R*Math.exp(-R/2)/Math.sqrt(24);
+				return Math.exp(-R/2)/Math.sqrt(24);
 			}
 			function r30(x,y,z){
 				var R =r(x,y,z);
@@ -119,13 +119,13 @@
 				return x*z*r32(x,y,z);
 			}
 			function n3l2m0(x,y,z){
-				return (3*Math.pow(z/2,2)-Math.pow(r(x,y,z),2))*r32(x,y,z);
+				return (3*Math.pow(z,2)-Math.pow(r(x,y,z),2))*r32(x,y,z);
 			}
 			function n3l2mPos1(x,y,z){
 				return y*z*r32(x,y,z);
 			}
 			function n3l2mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*r32(x,y,z);
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*r32(x,y,z);
 			}
 			function n4l0m0(x,y,z){
 				return 2.1*r40(x,y,z)/1.2;
@@ -146,35 +146,35 @@
 				return x*z*r42(x,y,z);
 			}
 			function n4l2m0(x,y,z){
-				return (3*Math.pow(z/2,2)-Math.pow(r(x,y,z),2))*r42(x,y,z);
+				return (3*Math.pow(z,2)-Math.pow(r(x,y,z),2))*r42(x,y,z);
 			}
 			function n4l2mPos1(x,y,z){
 				return y*z*r42(x,y,z);
 			}
 			function n4l2mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*r42(x,y,z);
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*r42(x,y,z);
 			}
 			function n4l3mNeg3(x,y,z){
-				return (Math.pow(x/2,2)-Math.pow(y/2,2))*r43(x,y,z);
+				return (Math.pow(x,2)-Math.pow(y,2))*r43(x,y,z);
 			}
 			function n4l3mNeg3(x,y,z){
-				return 2*(Math.pow(x/2,2)-3*Math.pow(y/2,2))*x*r43(x,y,z)/1.2;
+				return 2*(Math.pow(x,2)-3*Math.pow(y,2))*x*r43(x,y,z)/1.2;
 			}
 			function n4l3mNeg2(x,y,z){
 				return x*y*z*r43(x,y,z);
 			}
 			function n4l3mNeg1(x,y,z){
-				return x*(5*Math.pow(z/2,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
+				return x*(5*Math.pow(z,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
 			}
 			function n4l3m0(x,y,z){
-				return z*(5*Math.pow(z/2,2)-3*Math.pow(r(x,y,z),2))*r43(x,y,z)/1.5;
+				return z*(5*Math.pow(z,2)-3*Math.pow(r(x,y,z),2))*r43(x,y,z)/1.5;
 			}
 			function n4l3mPos1(x,y,z){
-				return y*(5*Math.pow(z/2,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
+				return y*(5*Math.pow(z,2)- Math.pow(r(x,y,z),2))*r43(x,y,z);
 			}
 			function n4l3mPos2(x,y,z){
-				return 2*(Math.pow(x/2,2)-Math.pow(y/2,2))*z*r43(x,y,z);				
+				return 2*(Math.pow(x,2)-Math.pow(y,2))*z*r43(x,y,z);				
 			}
 			function n4l3mPos3(x,y,z){
-				return 2*(3*Math.pow(x/2,2)-Math.pow(y/2,2))*y*r43(x,y,z)/1.2;
+				return 2*(3*Math.pow(x,2)-Math.pow(y,2))*y*r43(x,y,z)/1.2;
 			}

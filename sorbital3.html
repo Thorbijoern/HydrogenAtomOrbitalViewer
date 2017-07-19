@@ -184,8 +184,8 @@
             alphas[i] = temp;
         }
         if(l > 0)
-        	return alphas.map(e=>e/(7*parseInt(l)*max));
-        return alphas.map(e=>e*2/parseInt(n));
+        	return alphas.map(e=>e/(5*parseInt(l)*max));
+        return alphas.map(e=>e/(2*max));
     }
 
     function cubePos(posArr) { //Creates THREE vector from array of vectors
@@ -235,10 +235,10 @@
     scene.add(light);
 
     var resolution = 42;
-    var range = 9;
+    var range = 3;
     var n = 1;
     var l = 0;
-    var cameraOffset = 16;
+    var cameraOffset = 9;
     camera.position.z = cameraOffset;
     camera.position.x = 0;
     camera.position.y = 0;
@@ -261,7 +261,6 @@
 
     scene.add(nucleus);
 
-    camera.position.z = 16;
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -298,13 +297,13 @@
         n = $("#n option:selected").val();
         l = $("#l option:selected").val();
 
-        cameraOffset = 10 + 6 * Math.pow(n, 2) + 2 * l;
+        cameraOffset = 5 + 4 * Math.pow(n, 2) - l;
 
         var waveFunc = "n" + n + "l" + $("#l option:selected").val() + "m" + $("#m option:selected").val();
 
 
-        range = 5 + 4 * Math.pow(n, 2) + 5 * l
-        resolution = 40 + 2 * Math.pow(n, 2);
+        range = 1 + 2*Math.pow(n, 2) + 13 * l
+        resolution = 40 + 6 * n + 3*l;
 
 
         var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
