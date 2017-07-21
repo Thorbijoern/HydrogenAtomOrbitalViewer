@@ -80,7 +80,7 @@ function Graph(config) {
         context.moveTo(this.centerX, 0);
         context.lineTo(this.centerX, this.canvas.height);
         context.strokeStyle = this.axisColor;
-        context.lineWidth = 1;
+        context.lineWidth = 2;
         context.stroke();
 
         context.restore();

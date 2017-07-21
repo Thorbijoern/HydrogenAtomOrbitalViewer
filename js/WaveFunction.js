@@ -15,11 +15,11 @@
 				var tempmid;
 				var tempafter;
 
-				for(var i = 0; i < resolution; i++,currentx += xsteps){
+				for(let i = 0; i < resolution; i++,currentx += xsteps){
 					currenty = ymin;
-					for(var j = 0; j < resolution; j++, currenty +=ysteps){
+					for(let j = 0; j < resolution; j++, currenty +=ysteps){
 						currentz = zmin;	
-						for(var k = 0; k < resolution; k++,currentz += zsteps){
+						for(let k = 0; k < resolution; k++,currentz += zsteps){
 							tempcurr = foo(currentx,currenty,currentz);
 							tempmid = foo(currentx+xsteps/2,currenty+ysteps/2,currentz+zsteps/2);
 							tempafter = foo(currentx+xsteps,currenty+ysteps,currentz+zsteps);
@@ -179,6 +179,16 @@
 				return 2*(3*Math.pow(x,2)-Math.pow(y,2))*y*r43(x,y,z)/1.2;
 			}
 			//Latex wave equation variables
+			var wr10 = "2\\,{a_0}^\\frac{-3}{2}\\,e^{-\\frac{r}{a_0}}";
+			var wr20 = "\\frac{1}{\\sqrt{2}\\,{a_0}^\\frac{3}{2}}\\left(1-\\frac{1}{2}\\frac{r}{a_0}\\right)\\,e^{-\\frac{r}{a_0}}";
+			var wr21 = "\\frac{1}{\\sqrt{24}\\,{a_0}^\\frac{3}{2}}\\,\\frac{r}{a_0}\\,e^{\\frac{-r}{2\\,a_0}}"
+			var wr30 = "\\frac{2}{\\sqrt{27}\\,{a_0}^\\frac{3}{2}}\\,\\left[1 - \\frac{2}{3}\\frac{r}{a_0}+\\frac{2}{27}\\frac{r}{a_0}^2\\right]e^{\\frac{-r}{3a_0}}"
+			var wr31 = "\\frac{8}{27\\sqrt{6}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{6}\\frac{r}{a_0}\\right]\\frac{r}{a_0}\\,e^\\frac{-r}{3\\,a_0}\\cos\\theta";
+			var wr32 = "\\frac{4}{81\\sqrt{30}\\,{a_0}^\\frac{3}{2}}\\,\\frac{r^2}{{a_0}^2}e^{-\\frac{r}{3\\,a_0}}(3\\cos^2\\theta - 1)";
+			var wr40 = "\\frac{1}{4\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{3}{4}\\,\\frac{r}{a_0} +\\frac{1}{8}\\,\\frac{r^2}{{a_0}^2}-\\frac{1}{192}\\,\\frac{r^3}{{a_0}^3}\\right]\\,e^{\\frac{-r}{4a_0}}";
+			var wr41 = "\\frac{\\sqrt{5}}{16\\,\\sqrt{3}\\,{a_0}^\\frac{3}{2}}\\,\\left[1 - \\frac{1}{4}\\,\\frac{r}{a_0}+2\\,\\frac{1}{80}\\,\\frac{r}{a_0}^2\\right]\\frac{r}{a_0}\\,e^{\\frac{-r}{4a_0}}\\,cos\\theta";
+			var wr42 = "\\frac{1}{64\\sqrt{35}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}(3\\cos^2\\theta - 1)";
+			var wr43 = "\\frac{1}{768\\sqrt{35}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}(5\\cos^3\\theta-3\\cos\\theta)";
 			var wn1l0m0 = "\\frac{1}{\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,e^{\\frac{-r}{a_0}}";
 			var wn2l0m0 = "\\frac{1}{4\\sqrt{2\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[2-\\frac{r}{a_0}\\right]\\,e^{\\frac{-r}{2\\,a_0}}";
 			var wn2l1mNeg1 = "\\frac{1}{8\\sqrt{pi}\\,{a_0}^\\frac{3}{2}}\\,\\\\frac{r}{a_0}\\,e^{\\frac{-r}{2\\,a_0}}\\sin\\,\\theta\\,e^{-i\\,\\phi}";
@@ -201,7 +211,7 @@
 			var wn4l2mNeg1 = "\\frac{\\sqrt{3}}{256\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}\\,\\sin^2\\theta\\,e^{-2i\\phi}";
 			var wn4l2m0 = "\\frac{1}{156\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}(3\\cos^2\\theta - 1)";
 			var wn4l2mPos1 = "\\frac{\\sqrt{3}}{128\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}\\,\\sin\\theta \\,\\cos\\theta\\,e^{i\\phi}";
-			var wn4l2mNeg2 = "\\frac{\\sqrt{3}}{256\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}\\,\\sin^2\\theta\\,e^{2i\\phi}";
+			var wn4l2mPos2 = "\\frac{\\sqrt{3}}{256\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\,\\left[1-\\frac{1}{12}\\,\\frac{r}{a_0}\\right]\\frac{r^2}{{a_0}^2}\\,e^\\frac{-r}{4\\,a_0}\\,\\sin^2\\theta\\,e^{2i\\phi}";
 			var wn4l3mNeg3 = "\\frac{1}{6114\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin^3\\theta\\,e^{-3\\phi}";	
 			var wn4l3mNeg2 = "\\frac{\\sqrt{3}}{3072\\sqrt{6\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin^2\\theta\\,\\cos\\theta\\,e^{-2i\\phi}";
 			var wn4l3mNeg1 = "\\frac{\\sqrt{3}}{6114\\sqrt{5\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin\\theta\\,(5\\cos^2\\theta-1)\\,e^{-i\\phi}";
