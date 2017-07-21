@@ -19,7 +19,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
     <script type="x-shader/x-vertex" id="vertexshader">
-        attribute float alpha; varying float vAlpha; attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vAlpha = alpha; vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size* ( 300.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition; }
+        attribute float alpha; varying float vAlpha; attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vAlpha = alpha; vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size * ( 300.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition; }
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
         varying float vAlpha; uniform vec3 color; varying vec3 vColor; void main() { gl_FragColor = vec4( color * vColor, vAlpha ); }
@@ -131,7 +131,7 @@
             <div class="col-lg-2">
             </div>
         </div>
-        <div class="row" style="background-color:black; padding-top: 5em">
+        <div class="row" style="background-color:black; padding-top: 1em">
             <div class="col-lg-12">
                 <h2 align="center" style="font-weight:bold;color:white;mix-blend-mode: screen">Hydrogen Atomic Orbital Viewer</h2>
             </div>
@@ -167,7 +167,7 @@
                                 <input type="radio" name="options" id="l0" autocomplete="off" onfocus="l = 0; changem();" checked> 0
                             </label>
                         </div>
-                        <button class="btn btn-danger" type="button" onclick="reload()" style="margin-bottom: 0px;font-family: 'Bubbler One', serif;background-color: #ac2b37;border-color: #ac2b37;margin-left:auto;margin-right:0px;height:38px">Load Orbital</button>
+                        <button class="btn btn-danger" type="button" onclick="reload()" style="margin-bottom: 0px;font-family: 'Bubbler One', serif;background-color: #ac2b37;border-color: #ac2b37;margin-left:auto;margin-right:5%;height:38px">Load Orbital</button>
                     </div>
                     <div class="row">
                         <div class="col-lg-1">
@@ -179,10 +179,15 @@
                         </div>
                     </div>
                 </div>
-                <h2 align="center" style="color:white">
-                		Radial Equation
-                	</h2>
-                <canvas id="myChart" style="width: 95%;"></canvas>
+                <div>
+                    <p id="radial-equation" align="center" style="color:white">
+                        $$R(r) = 2\,{a_0}^\frac{-3}{2}\,e^{-\frac{r}{a_0}}$$
+                    </p>
+                    <canvas id="myChart" style="width: 95%;"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <p id="equation" style="font-size: 1.5em;">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
             </div>
             <div class='col-md-1'>
                 <p style="font-size:12pt;">Instructions: </p>
@@ -191,9 +196,6 @@
                 <p style="font-size:10pt; font-family:Arial">*Use the Mouse wheel to zoom</p>
                 <p style="font-size:10pt;font-family:Arial">*Click and drag to rotate orbital</p>
                 <p style="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
-            </div>
-            <div class="col-md-8">
-                <p id="equation" style="font-size: 1.5em;">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
             </div>
         </div>
     </div>
@@ -204,7 +206,6 @@
     //Manipulates UI
     function changel() {
         l = 0;
-        console.log("works");
         $("#l").html('<label class="btn btn btn-outline-primary active"><input type="radio" name="options" id="l0 " autocomplete="off" onfocus="l = 0; changem();"> 0 </label>');
 
         for (let i = 1; i < n; i++) {
@@ -214,7 +215,6 @@
     }
 
     function changem() {
-        console.log(l);
         m = 0;
         $("#m").html("");
         for (var i = -l; i < 0; i++) {
@@ -273,13 +273,13 @@
     function cubeSize(resolution, posArr) {
         var sizes = new Float32Array(posArr.length);
         for (var i = 0; i < posArr.length; i++) {
-            sizes[i] = 2.5 * range / resolution;
+            sizes[i] = 2 * range / resolution;
         }
         return sizes;
     }
     var modelContainer = $("#model-container").get(0);
     modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-    modelContainer.style.height = 0.60 * window.innerHeight + 'px';
+    modelContainer.style.height = 0.65 * window.innerHeight + 'px';
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
@@ -379,8 +379,10 @@
 
         $('#equation').html("$$\\psi(r,\\theta,\\phi)=" + eval('w' + waveFunc) + "$$");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
-        range = 1 + 2 * Math.pow(n, 2) + 13 * l
-        resolution = 40 + 6 * n + 3 * l;
+        $('#radial-equation').html("$$R(r)=" + eval('wr' + parseInt(n) + l) + "$$");
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "radial-equation"]);
+        range = 1 + 2 * Math.pow(n, 2) + 6 * l
+        resolution = 42 + n;
 
 
         var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
@@ -390,7 +392,7 @@
         geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
         geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
 
-        var particleSystem = new THREE.Points(
+        particleSystem = new THREE.Points(
             geometry, shaderMaterial);
         camera.position.z = cameraOffset;
         camera.position.x = 0;
