@@ -167,6 +167,7 @@
                                 <input type="radio" name="options" id="l0" autocomplete="off" onfocus="l = 0; changem();" checked> 0
                             </label>
                         </div>
+                        <button class="btn btn-danger" type="button" onclick="reload()" style="margin-bottom: 0px;font-family: 'Bubbler One', serif;background-color: #ac2b37;border-color: #ac2b37;margin-left:auto;margin-right:0px;height:38px">Load Orbital</button>
                     </div>
                     <div class="row">
                         <div class="col-lg-1">
@@ -182,9 +183,6 @@
                 		Radial Equation
                 	</h2>
                 <canvas id="myChart" style="width: 95%;"></canvas>
-                <div class="wrapper" style="text-align: center;">
-                    <button class="btn btn-danger" type="button" onclick="reload()">Load Orbital</button>
-                </div>
             </div>
             <div class='col-md-1'>
                 <p style="font-size:12pt;">Instructions: </p>
@@ -212,6 +210,7 @@
         for (let i = 1; i < n; i++) {
             $("#l").append('<label class="btn btn btn-outline-primary"><input type="radio" name="options" id="l' + i + '" autocomplete="off" onfocus="l =' + i + '; changem();"> ' + i + ' </label>');
         }
+        changem();
     }
 
     function changem() {
@@ -297,7 +296,7 @@
         uniforms: uniforms,
         vertexShader: $('#vertexshader').get(0).textContent,
         fragmentShader: $('#fragmentshader').get(0).textContent,
-        //blending: THREE.SubtractivetiveBlending,
+        blending: THREE.AdditiveBlending,
         depthTest: false,
         transparent: true
     });
