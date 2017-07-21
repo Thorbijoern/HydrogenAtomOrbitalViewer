@@ -95,18 +95,15 @@ function Graph(config) {
     };
     Graph.prototype.drawEquation = function(equation, color, thickness) {
         var context = this.context;
-        var mY = 0;
         var MY = 0;
         let points = [];
         for (var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
             let temp =  equation(x, 0, 0);
-            if(temp < mY)
-                mY = temp;
             if(temp > MY)
                 MY = temp;
             points.push([x,temp]);
         }
-        this.update(-MY, MY);
+        this.update(-MY*1.1, MY*1.1);
         context.save();
         context.save();
         this.transformContext();

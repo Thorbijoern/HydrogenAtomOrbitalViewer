@@ -12,10 +12,10 @@ h1 {
 	margin-top: 0px;
 }
 h2{
-	font-family: 'Bubbler One', sans-serif;
+	font-family: 'Zilla Slab', sans-serif;
+  color: black;
 }
 p {
-	font-family: "Impact";
 	text-align: left;
 }
 select {
@@ -34,6 +34,15 @@ button {
 	font-size: 30px;
 	margin-bottom: 15px;
 }
+.drop-caps{
+  color:#AC2B37;
+  float: left;
+  font-family: Georgia;
+  font-size: 5em;
+  line-height: 0.9em;
+  padding-right: 4px;
+  padding-left: 0.1em;
+  }
 .info-panel {
 	padding: 5px;
 	background-color: #ffffff;
@@ -71,12 +80,21 @@ button {
     background: -moz-linear-gradient(black, white); /* For Firefox 3.6 to 15 */
     background: linear-gradient(gray, white); /* Standard syntax */
 }
-.blend-title{
-    color:white;
-    mix-blend-mode: screen;
+.box-title{
     border-style: solid solid solid solid;
     border-left-width: 10px;
     border-right-width: 10px;
+}
+.box-title-2{
+    border-left-style: solid;
+    border-right-style: solid;
+    border-left-width: 10px;
+    border-right-width: 10px;
+}
+.blend-title{
+    color:white;
+    mix-blend-mode: screen;
+    
 }
 #elem1{
         -ms-transform:translate(100px, 0px); /* IE 9 */

@@ -5,7 +5,7 @@
     <meta charset=utf-8>
     <title>Generates view of atomic orbital </title>
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
-    <link href="https://fonts.googleapis.com/css?family=Bubbler+One|Source+Sans+Pro:600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bubbler+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Zilla+Slab" rel="stylesheet">
     <link rel="stylesheet" href="css/hydrogen.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -84,22 +84,80 @@
         </g>
     </svg>
     <div class="container-fluid">
-        <div class="row" style='height:400px; background-position: 50% 50%; background-size: 50% 100; background-color:gray; background-image: url("http://www.clker.com/cliparts/b/8/c/0/12065573891491312817IncessantBlabber_Stylized_atom.svg");background-repeat:no-repeat;'>
+        <div class="row" style='height:400px; background-position: 50% 50%; background-size: 50% 100; background-color:gray; background-image: url("http://www.clker.com/cliparts/b/8/c/0/12065573891491312817IncessantBlabber_Stylized_atom.svg");background-repeat:no-repeat; opacity: 0.8'>
             <div class="col-lg-3">
             </div>
             <div class="col-lg-6" style="padding-top: 150px">
-                <h1 class="blend-title" align="center"> The Hydrogen Atom</h1>
+                <h1 class="blend-title box-title" align="center"> The Hydrogen Atom</h1>
             </div>
             <div class="col-lg-3">
             </div>
         </div>
+        <div class="row" style="padding-top: 5em">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4">
+                <h3 align="center" class="box-title-2">$$a_0=\frac{4\pi\,\hbar^2\,\epsilon_0}{\mu\,e^2}$$
+                </h3>
+            </div>
+            <div class="col-lg-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 align="center" style="font-weight:bold;color:#AC2B37">The Bohr Model</h2>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 3em">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-8">
+                <p>
+                    <span class="drop-caps" align="center">P</span>hysics took quite a turn near the begining of the twentieth century. 1897 marked the year physicist J.J. Thomson discovered the electron, and 1911 was the year that the nucleus was found through the famous <a href="https://en.wikipedia.org/wiki/Geiger%E2%80%93Marsden_experiment">Geiger-Marsden Experiment</a>. The leading atomic model at the time was the Rutherford atomic model, which predicted electron orbits around the nucleus to be similar to the orbits of celestial bodies around the sun. This model however had a few problems associated with it, most notably :-
+                </p>
+                <p style="padding: 1em 5em 1em 5em">
+                    Maxwell's Equations predict that the motion of an electron around the nucleus of an atom would produce electromagnetic radiation, which would result in energy loss of the electron over time. As a result of this energy loss, the electron would eventually spiral into the nucleus as it orbits the atom.
+                </p>
+                <p>
+                    The first attempt to rectify this problem was made by Niels Bohr in 1913. Bohr's atomic model predicted "layers" of atomic orbitals by which electrons were only allowed to have circular orbits at certain fixed distances away from the nucleus. The result of this was that electron could only gain and lose angular momentum in amounts quantized by \(\hbar = 6.582119514×10^{−16} eV\,s \). Furthermore there would be a minimum orbit which electrons are allowed to fall into, making it impossible for electrons to fall into the nucleus. From this Bohr was able to predict the atomic radius of the Hydrogen atom and energies of the orbitals with some simple math and basic physics shown below.
+                </p>
+                <p>With angular momentum $$l = n\hbar $$ Where \(n \geq 1\) is an integer. Then for circular orbit, it is requaired that twice the negative of the kinetic energy be equal to the potential energy. That is $$2E_K=-E_P$$ Since the orbit is circular, all of the kinetic energy results from the hydrogen atom's angular momentum. So $$E_K=\frac{l^2}{2\,\mu\,r^2}=\frac{n^2\,\hbar^2}{2\,\mu\,r^2}$$ where \(\mu=\frac{m_e\,m_p}{m_e+m_p}\) is the atom's reduced mass, with \(m_e\) and \(m_p\) being the mass of the electron and proton respectively. All that is needed now is the potential energy of the atoms which is given by Coulumb's law which says that \(E_P=-\frac{e^2}{4\pi\,\epsilon_0\,r^2}\), where \(r\) is the radius of orbit.Then after some algebra, the orbiting radius is found to be $$r = \frac{4\pi\,n^2\,\hbar^2\,\epsilon_0}{\mu\,e^2}$$ The Bohr radius is given for the case of \(n=1\), which is generally thought of as the radius of the Hydrogen atom $$a_0=\frac{4\pi\,\hbar^2\,\epsilon_0}{\mu\,e^2}$$ Using that the total energy is $$E_T=E_K+E_P=-E_K$$ one can then find the energy of each orbital which is $$E_T= - \frac{l^2}{2\mu\, r^2}=-\frac{e^4\,\mu}{32\pi^2\,\hbar^2\,{\epsilon_0}^2}\approx - 13.6\,eV$$
+                </p>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <hr>
+        </p>
+        <div class="row">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4">
+                <h3 align="center" class="box-title-2">$$\frac{-\hbar^2}{2m}\nabla^2\psi+V\,\psi=i\hbar\frac{\partial}{\partial\,t}\psi$$
+                </h3>
+            </div>
+            <div class="col-lg-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 align="center" style="font-weight:bold;color:#AC2B37">The Schrödinger Equation</h2>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Erwin_Schr%C3%B6dinger_%281933%29.jpg/220px-Erwin_Schr%C3%B6dinger_%281933%29.jpg" class="rounded-circle" style="height:200px">
             </div>
-            <div class="col-lg-10">
-                <h2 align="right">Schrodinger Equation</h2>
-                <h3 align="right">$$\hat{H}\,\lvert\psi\rangle=\hat{E}\,\lvert\psi\rangle$$</h3>
+            <div class="col-lg-8">
+            <p><span class="drop-caps">E</span>ven after the Bohr Model of the Hydrogenic (Hydrogen like) atom, Quantum Mechanics was still in its infancy. The next major step came with the prediction of particle-wave duality by <a href="https://en.wikipedia.org/wiki/Louis_de_Broglie">Louis de Broglie.</a> Using intuition of the paticle wave duality of light, de Broglie hypothesised that the momenta and energy of all particles are related to their wavelengths and frequencies by
+            $$p=\hbar k\qquad\qquad\qquad\text{and}\qquad\qquad\qquad E=\hbar\nu$$
+            de Broglie was later vindicated by the <a href="https://en.wikipedia.org/wiki/Davisson%E2%80%93Germer_experiment">Davisson-Germer experiment</a> which displayed the wave like nature of the electron.</p>
+            <p> 
+            After de Broglie, physicist Peter Debye supposedly made a comment that if particles behaved like waves, then they should satisfy some wave equation. This comment inspired <a href="https://en.wikipedia.org/wiki/Schrödinger_equation">Erwin Schrödinger's</a> efforts for the search of a wave equation. Schrödinger first examined the relatatistic energy momentum relationship and developed a wave equation such that standing waves would satisfy the de Broglie relation. The resulting equation&#8212;now known as the Klein-Gordon equation&#8212;resulted in energy states that did not correctly predict <a href="https://en.wikipedia.org/wiki/Arnold_Sommerfeld">Arnold Sommerfeld's</a> correction to the Bohr atom.
+            $${\frac {1}{c^{2}}}{\frac {\partial ^{2}}{\partial t^{2}}}\psi -\nabla ^{2}\psi +{\frac {m^{2}c^{2}}{\hbar ^{2}}}\psi =0$$
+            As a result, Schrödinger abandoned this attempt and secluded himself in a mountain cabin. Schrödinger decided to continue his efforts on his non-relativistic equation which he later published in 1926.
+            $$\frac{-\hbar^2}{2m}\nabla^2\psi+V\,\psi=i\hbar\frac{\partial}{\partial\,t}\psi$$ 
+            Schrödinger never explained the nature of the wave function \(\psi\) in his papers, possibly due to his rejection of Quantum Mechanics being statistical in nature. </p>
+            <p> From Schrödinger's equation, it became possible to solve for functions that describe the probability of finding electron at various points in space as it orbitted the atom. It is now common to think of the electron as a cloud rather than a definate particle orbiting a nucleus.</p>
+            <p> 3D plots of the electron orbitals are shown below. It is possible to view orbitals and sub-orbitals by changing the options. The wavefunctions are shown beside the orbitals.
+            </p>
+            </div>
+            <div class="col-lg-2">
             </div>
         </div>
         <div class="row" style="background-color:black">
@@ -145,7 +203,7 @@
             </div>
         </div>
         <div class='row' style="background-color:black">
-            <div class='col-md-2'>
+            <div class='col-md-1'>
                 <p style="font-size:12pt;">Instructions: </p>
             </div>
             <div class='col-md-3'>
@@ -154,7 +212,7 @@
                 <p style="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
                 <p style="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <p id="equation">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
             </div>
         </div>
