@@ -4,11 +4,14 @@
 <head>
     <meta charset=utf-8>
     <title>Generates view of atomic orbital </title>
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="https://npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Bubbler+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Zilla+Slab" rel="stylesheet">
     <link rel="stylesheet" href="css/hydrogen.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
     </script>
     <script type="text/x-mathjax-config">
@@ -20,32 +23,6 @@
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
         varying float vAlpha; uniform vec3 color; varying vec3 vColor; void main() { gl_FragColor = vec4( color * vColor, vAlpha ); }
-    </script>
-    <script>
-    //Manipulate UI
-    function changel() {
-        console.log("works");
-        $("#l").html("");
-        var n = $("#n").val();
-        for (i = 0; i < n; i++) {
-            $("#l").append("<option value = '" + i + "'>l=" + i + "</option>");
-        }
-        changem();
-    }
-
-    function changem() {
-        $("#m").html("");
-        var l = $("#l").val();
-        for (i = -l; i <= l; i++) {
-            if (i < 0) {
-                $("#m").append("<option value = 'Neg" + Math.abs(i) + "' selected>m=" + i + "</option>");
-            } else if (i == 0) {
-                $("#m").append("<option value = '" + i + "' selected>m=" + i + "</option>");
-            } else {
-                $("#m").append("<option value = 'Pos" + i + "'>m=" + i + "</option>");
-            }
-        }
-    }
     </script>
 </head>
 
@@ -126,7 +103,6 @@
             </div>
         </div>
         <hr>
-        </p>
         <div class="row">
             <div class="col-lg-4"></div>
             <div class="col-lg-4">
@@ -155,41 +131,51 @@
             <div class="col-lg-2">
             </div>
         </div>
-        <div class="row" style="background-color:black; padding-top: 10em">
+        <div class="row" style="background-color:black; padding-top: 5em">
+            <div class="col-lg-12">
+                <h2 align="center" style="font-weight:bold;color:#AC2B37;padding-bottom: 1em">Hydrogen Atomic Orbital Viewer</h2>
+            </div>
             <div id="model-container" class="col-lg-8"></div>
             <div class="col-lg-4">
+                <h3 align="center" style="font-weight: bold">Controls</h3>
                 <div class="row">
-                    <div class="col-lg-4">
-                        <h1 align="center" style="font-weight: bold">Controls</h1>
+                    <div class="btn-group" id="n" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                            <input type="radio" name="options" id="n1" autocomplete="off" onfocus="n = 1; changel();" checked> 1
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="options" id="n2" autocomplete="off" onfocus="n = 2; changel();"> 2
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="options" id="n3" autocomplete="off" onfocus="n = 3; changel();"> 3
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="options" id="n4" autocomplete="off" onfocus="n = 4; changel()"> 4
+                        </label>
                     </div>
                 </div>
                 <div class="row">
-                    <select class="form-control" id="n" onchange='changel()'>
-                        <option value='1' selected>n=1</option>
-                        <option value='2'>n=2</option>
-                        <option value='3'>n=3</option>
-                        <option value='4'>n=4</option>
-                    </select>
+                    <div class="btn-group" id="l" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                            <input type="radio" name="options" id="l0" autocomplete="off" onfocus="l = 0; changem();" checked> 0
+                        </label>
+                    </div>
                 </div>
                 <div class="row">
-                    <select class="form-control" id="l" onchange='changem()'>
-                        <option value='0'>l=0</option>
-                    </select>
+                    <div class="btn-group" id="m" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                            <input type="radio" name="options" id="m0" autocomplete="off" onfocus="m = 0;" checked> 0
+                        </label>
+                    </div>
                 </div>
-                <div class="row">
-                    <select class="form-control" id="m">
-                        <option value='0'>m=0</option>
-                    </select>
-                </div>
-                <div class="row">
-                    <canvas id="myChart" style="width: 95%"></canvas>
-                </div>
-                <div class="row">
-                    <button type="button" onclick="reload()">Load Orbital</button>
+                <h2 align="center" style="color:white">
+                		Radial Equation
+                	</h2>
+                <canvas id="myChart" style="width: 95%;"></canvas>
+                <div class="wrapper" style="text-align: center;">
+                    <button class="btn btn-outline-primary" type="button" onclick="reload()">Load Orbital</button>
                 </div>
             </div>
-        </div>
-        <div class='row' style="background-color:black">
             <div class='col-md-1'>
                 <p style="font-size:12pt;">Instructions: </p>
             </div>
@@ -207,6 +193,31 @@
     <script src="js/WaveFunction.js"></script>
     <script type="text/javascript" src="js/Graph.js"></script>
     <script>
+    //Manipulates UI
+    function changel() {
+        l = 0;
+        console.log("works");
+        $("#l").html('<label class="btn btn-primary active"><input type="radio" name="options" id="l0 " autocomplete="off" onfocus="l = 0; changem();"> 0 </label>');
+
+        for (let i = 1; i < n; i++) {
+            $("#l").append('<label class="btn btn-primary"><input type="radio" name="options" id="l' + i + '" autocomplete="off" onfocus="l =' + i + '; changem();"> ' + i + ' </label>');
+        }
+    }
+
+    function changem() {
+    	console.log(l);
+    		m = 0;
+    		$("#m").html("");
+        for (var i = -l; i < 0; i++) {
+            $("#m").append('<label class="btn btn-primary"><input type="radio" name="options" id="m' + i + '" autocomplete="off" onfocus="m =' + i + ';"> ' + i + ' </label>');
+        }
+        $("#m").append('<label class="btn btn-primary active"><input type="radio" name="options" id="m0 " autocomplete="off" onfocus="m = 0;"> 0 </label>');
+        i++;
+        for (; i <= l; i++) {
+            $("#m").append('<label class="btn btn-primary"><input type="radio" name="options" id="m' + i + '" autocomplete="off" onfocus="m =' + i + ';"> ' + i + ' </label>');
+        }
+    }
+
     function cubePos1(posArr) { //Creates float arr vertices
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
@@ -347,13 +358,15 @@
     animate();
 
     function reload() {
-        console.log("works");
-        n = $("#n option:selected").val();
-        l = $("#l option:selected").val();
 
         cameraOffset = 5 + 4 * Math.pow(n, 2) - l;
 
-        var waveFunc = "n" + n + "l" + l + "m" + $("#m option:selected").val();
+        var waveFunc = "n" + n + "l" + l + "m";
+        if(m<0)
+        	waveFunc += 'Pos';
+        else if(m > 0)
+        	waveFunc += 'Neg';
+        waveFunc += m;
 
         $('#equation').html("$$\\psi(r,\\theta,\\phi)=" + eval('w' + waveFunc) + "$$");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
