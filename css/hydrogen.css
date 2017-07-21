@@ -15,12 +15,12 @@ h1 {
 }
 
 h2 {
-    font-family: 'Zilla Slab', sans-serif;
+    font-family: 'Zilla Slab', serif;
     color: black;
 }
 
 h3 {
-    font-family: 'Zilla Slab', sans-serif;
+    font-family: 'Zilla Slab', serif;
 }
 
 p {
@@ -45,7 +45,10 @@ button {
     font-size: 30px;
     margin-bottom: 15px;
 }
-
+ul{color: white}
+li {
+  font-family:'Bubbler One', sans-serif;
+}
 .drop-caps {
     color: #AC2B37;
     float: left;
@@ -192,7 +195,25 @@ button {
 #equation {
     color: white;
 }
-
+#my-footer {
+  background-color: #dddddd;
+  z-index=100000;
+  box-shadow: 0px -10px 10px 10px rgba(0, 0, 0, 1);
+    border-style: solid hidden hidden hidden;
+  border-width:5px
+}
+#git:hover{
+  fill:#3e2f60
+}
+#linkedIn:hover > path{
+  fill:#3e2f60
+}
+#linkedIn:hover >circle{
+  stroke:#3e2f60
+}
+#twitter:hover{
+  fill:#3e2f60
+}
 input[type=range] {
     margin-bottom: 10px;
 }
