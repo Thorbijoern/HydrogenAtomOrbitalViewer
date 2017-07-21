@@ -144,61 +144,48 @@
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-            <p><span class="drop-caps">E</span>ven after the Bohr Model of the Hydrogenic (Hydrogen like) atom, Quantum Mechanics was still in its infancy. The next major step came with the prediction of particle-wave duality by <a href="https://en.wikipedia.org/wiki/Louis_de_Broglie">Louis de Broglie.</a> Using intuition of the paticle wave duality of light, de Broglie hypothesised that the momenta and energy of all particles are related to their wavelengths and frequencies by
-            $$p=\hbar k\qquad\qquad\qquad\text{and}\qquad\qquad\qquad E=\hbar\nu$$
-            de Broglie was later vindicated by the <a href="https://en.wikipedia.org/wiki/Davisson%E2%80%93Germer_experiment">Davisson-Germer experiment</a> which displayed the wave like nature of the electron.</p>
-            <p> 
-            After de Broglie, physicist Peter Debye supposedly made a comment that if particles behaved like waves, then they should satisfy some wave equation. This comment inspired <a href="https://en.wikipedia.org/wiki/Schrödinger_equation">Erwin Schrödinger's</a> efforts for the search of a wave equation. Schrödinger first examined the relatatistic energy momentum relationship and developed a wave equation such that standing waves would satisfy the de Broglie relation. The resulting equation&#8212;now known as the Klein-Gordon equation&#8212;resulted in energy states that did not correctly predict <a href="https://en.wikipedia.org/wiki/Arnold_Sommerfeld">Arnold Sommerfeld's</a> correction to the Bohr atom.
-            $${\frac {1}{c^{2}}}{\frac {\partial ^{2}}{\partial t^{2}}}\psi -\nabla ^{2}\psi +{\frac {m^{2}c^{2}}{\hbar ^{2}}}\psi =0$$
-            As a result, Schrödinger abandoned this attempt and secluded himself in a mountain cabin. Schrödinger decided to continue his efforts on his non-relativistic equation which he later published in 1926.
-            $$\frac{-\hbar^2}{2m}\nabla^2\psi+V\,\psi=i\hbar\frac{\partial}{\partial\,t}\psi$$ 
-            Schrödinger never explained the nature of the wave function \(\psi\) in his papers, possibly due to his rejection of Quantum Mechanics being statistical in nature. </p>
-            <p> From Schrödinger's equation, it became possible to solve for functions that describe the probability of finding electron at various points in space as it orbitted the atom. It is now common to think of the electron as a cloud rather than a definate particle orbiting a nucleus.</p>
-            <p> 3D plots of the electron orbitals are shown below. It is possible to view orbitals and sub-orbitals by changing the options. The wavefunctions are shown beside the orbitals.
-            </p>
+                <p><span class="drop-caps">E</span>ven after the Bohr Model of the Hydrogenic (Hydrogen like) atom, Quantum Mechanics was still in its infancy. The next major step came with the prediction of particle-wave duality by <a href="https://en.wikipedia.org/wiki/Louis_de_Broglie">Louis de Broglie.</a> Using intuition of the paticle wave duality of light, de Broglie hypothesised that the momenta and energy of all particles are related to their wavelengths and frequencies by $$p=\hbar k\qquad\qquad\qquad\text{and}\qquad\qquad\qquad E=\hbar\nu$$ de Broglie was later vindicated by the <a href="https://en.wikipedia.org/wiki/Davisson%E2%80%93Germer_experiment">Davisson-Germer experiment</a> which displayed the wave like nature of the electron.</p>
+                <p>
+                    After de Broglie, physicist Peter Debye supposedly made a comment that if particles behaved like waves, then they should satisfy some wave equation. This comment inspired <a href="https://en.wikipedia.org/wiki/Schrödinger_equation">Erwin Schrödinger's</a> efforts for the search of a wave equation. Schrödinger first examined the relatatistic energy momentum relationship and developed a wave equation such that standing waves would satisfy the de Broglie relation. The resulting equation&#8212;now known as the Klein-Gordon equation&#8212;resulted in energy states that did not correctly predict <a href="https://en.wikipedia.org/wiki/Arnold_Sommerfeld">Arnold Sommerfeld's</a> correction to the Bohr atom. $${\frac {1}{c^{2}}}{\frac {\partial ^{2}}{\partial t^{2}}}\psi -\nabla ^{2}\psi +{\frac {m^{2}c^{2}}{\hbar ^{2}}}\psi =0$$ As a result, Schrödinger abandoned this attempt and secluded himself in a mountain cabin where he continued his efforts on a non-relativistic equation which he later published in 1926. $$\frac{-\hbar^2}{2m}\nabla^2\psi+V\,\psi=i\hbar\frac{\partial}{\partial\,t}\psi$$
+                </p>
+                <p> From the Schrödinger equation, it became possible to solve for the functions \(\psi\) whose amplitude square describe the probabilities of finding electron at various points in space. This gave rise to the modern model of the hydrogen atom where electrons are imagined as clouds around the nucleus instead of as a particle orbitting around it. </p>
+                <p> These electron clouds take varying shapes and result in interesting geometries. 3D models of the electron orbitals are shown below along with their respective wavefunctions a plot of the radial graph is shown along side the model.
+                </p>
             </div>
             <div class="col-lg-2">
             </div>
         </div>
-        <div class="row" style="background-color:black">
+        <div class="row" style="background-color:black; padding-top: 10em">
             <div id="model-container" class="col-lg-8"></div>
             <div class="col-lg-4">
                 <div class="row">
-                    <div class="col-lg-3">
-                        <p style="text-align: center">Controls</p>
-                        <div class="row">
-                            <select class="form-control" id="n" onchange='changel()'>
-                                <option value='1' selected>n=1</option>
-                                <option value='2'>n=2</option>
-                                <option value='3'>n=3</option>
-                                <option value='4'>n=4</option>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <select class="form-control" id="l" onchange='changem()'>
-                                <option value='0'>l=0</option>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <select class="form-control" id="m">
-                                <option value='0'>m=0</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="row">
-                            <button type="button" onclick="reload()">Load Orbital</button>
-                        </div>
-                        <div class="row">
-                            <p style="font-size:12pt;font-family:Arial;text-align:center">y-axis scale</p>
-                        </div>
-                        <div class="row">
-                            <input type="range" id="chart-slider" name="Resolution" min="0" max="20" onchange="reloadChart();">
-                        </div>
+                    <div class="col-lg-4">
+                        <h1 align="center" style="font-weight: bold">Controls</h1>
                     </div>
                 </div>
                 <div class="row">
+                    <select class="form-control" id="n" onchange='changel()'>
+                        <option value='1' selected>n=1</option>
+                        <option value='2'>n=2</option>
+                        <option value='3'>n=3</option>
+                        <option value='4'>n=4</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <select class="form-control" id="l" onchange='changem()'>
+                        <option value='0'>l=0</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <select class="form-control" id="m">
+                        <option value='0'>m=0</option>
+                    </select>
+                </div>
+                <div class="row">
                     <canvas id="myChart" style="width: 95%"></canvas>
+                </div>
+                <div class="row">
+                    <button type="button" onclick="reload()">Load Orbital</button>
                 </div>
             </div>
         </div>
@@ -210,7 +197,6 @@
                 <p style="font-size:10pt; font-family:Arial">*Use the Mouse wheel to zoom</p>
                 <p style="font-size:10pt;font-family:Arial">*Click and drag to rotate orbital</p>
                 <p style="font-size:10pt;font-family:Arial">*Select quantum numbers in Controls and click 'Load Orbital' to load new orbitals</p>
-                <p style="font-size:10pt;font-family:Arial">*The slider controls the scale of the y-axis in the plot of the radial compnent of the wave function</p>
             </div>
             <div class="col-md-8">
                 <p id="equation">$$\psi(r,\theta,\phi)= \frac{1}{\sqrt{\pi}\,{a_0}^\frac{3}{2}}\,e^{\frac{-r}{a_0}}$$</p>
