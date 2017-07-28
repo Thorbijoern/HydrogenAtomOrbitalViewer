@@ -25,23 +25,23 @@
         attribute vec3 customColor; 
         varying vec3 vColor; 
         void main() { 
-        	vAlpha = alpha; 
-        	vColor = customColor; 
-        	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); 
-        	gl_PointSize = size * ( 500.0 / -mvPosition.z ); 
-        	gl_Position = projectionMatrix * mvPosition; }
+            vAlpha = alpha; 
+            vColor = customColor; 
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); 
+            gl_PointSize = size * ( 500.0 / -mvPosition.z ); 
+            gl_Position = projectionMatrix * mvPosition; }
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
         varying float vAlpha; 
         varying vec3 vColor;
          void main() { 
             float r = 0.0;
-    				vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-    				r = dot(cxy, cxy);
-    				if (r > 1.0) {
-        			discard;
-    				}
-         	gl_FragColor = vec4( vColor, vAlpha ); }
+                    vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+                    r = dot(cxy, cxy);
+                    if (r > 1.0) {
+                    discard;
+                    }
+            gl_FragColor = vec4( vColor, vAlpha ); }
     </script>
 </head>
 
@@ -273,7 +273,7 @@
     function cubePos(posArr) { //Creates float arr vertices
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
-        		let t = 3 * i;
+                let t = 3 * i;
             positions[t] = posArr[i][0] + 1.5*Math.random()*range/resolution;
             positions[t + 1] = posArr[i][1] + 1.5*Math.random()*range/resolution;
             positions[t + 2] = posArr[i][2] + 1.5*Math.random()*range/resolution;
@@ -317,7 +317,7 @@
     }
     var modelContainer = $("#model-container").get(0);
     modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-    modelContainer.style.height = 0.65 * window.innerHeight + 'px';
+    modelContainer.style.height = 0.3 * window.innerWidth + 'px'; 
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
@@ -377,8 +377,8 @@
     window.addEventListener('resize', onResize, false);
 
     function onResize() {
-        modelContainer.style.height = 0.60 * window.innerHeight + 'px';
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
+        modelContainer.style.height = 0.3 * window.innerWidth + 'px'; 
         camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
