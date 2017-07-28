@@ -19,10 +19,29 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
     <script type="x-shader/x-vertex" id="vertexshader">
-        attribute float alpha; varying float vAlpha; attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vAlpha = alpha; vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size * ( 300.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition; }
+        attribute float alpha; 
+        varying float vAlpha; 
+        attribute float size; 
+        attribute vec3 customColor; 
+        varying vec3 vColor; 
+        void main() { 
+        	vAlpha = alpha; 
+        	vColor = customColor; 
+        	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); 
+        	gl_PointSize = size * ( 900.0 / -mvPosition.z ); 
+        	gl_Position = projectionMatrix * mvPosition; }
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
-        varying float vAlpha; uniform vec3 color; varying vec3 vColor; void main() { gl_FragColor = vec4( color * vColor, vAlpha ); }
+        varying float vAlpha; 
+        varying vec3 vColor;
+         void main() { 
+            float r = 0.0;
+    				vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+    				r = dot(cxy, cxy);
+    				if (r > 1.0) {
+        			discard;
+    				}
+         	gl_FragColor = vec4( vColor, vAlpha ); }
     </script>
 </head>
 
@@ -254,9 +273,10 @@
     function cubePos1(posArr) { //Creates float arr vertices
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
-            positions[3 * i] = (posArr[i][0]);
-            positions[3 * i + 1] = (posArr[i][1]);
-            positions[3 * i + 2] = (posArr[i][2]);
+        		let t = 3 * i;
+            positions[t] = (posArr[i][0]);
+            positions[t + 1] = (posArr[i][1]);
+            positions[t + 2] = (posArr[i][2]);
         }
         return positions;
     }
@@ -265,9 +285,10 @@
         var colors = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
             var color = new THREE.Color(posArr[i][4]);
-            colors[3 * i] = color.r;
-            colors[3 * i + 1] = color.g;
-            colors[3 * i + 2] = color.b;
+            let t = 3 * i;
+            colors[t] = color.r;
+            colors[t + 1] = color.g;
+            colors[t + 2] = color.b;
         }
         return colors;
     }
@@ -297,7 +318,7 @@
     function cubeSize(resolution, posArr) {
         var sizes = new Float32Array(posArr.length);
         for (var i = 0; i < posArr.length; i++) {
-            sizes[i] = 2 * range / resolution;
+            sizes[i] =  range / resolution;
         }
         return sizes;
     }
@@ -326,14 +347,8 @@
     });
 
 
-
-
-    var light = new THREE.PointLight(0xffffff);
-    light.position.copy(new THREE.Vector3(0, 0, 30));
-    scene.add(light);
-
     var resolution = 42;
-    var range = 3;
+    var range = 5;
     var n = 1;
     var l = 0;
     var cameraOffset = 9;
@@ -381,7 +396,6 @@
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
-        light.position.copy(camera.position);
         render();
     }
 
@@ -405,8 +419,8 @@
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
         $('#radial-equation').html("$$R(r)=" + eval('wr' + parseInt(n) + l) + "$$");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "radial-equation"]);
-        range = 1 + 2 * Math.pow(n, 2) + 6 * l
-        resolution = 42 + n;
+        range = 3 + 2 * n * n + 6 * l
+        resolution = 42 + n*n;
 
 
         var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
