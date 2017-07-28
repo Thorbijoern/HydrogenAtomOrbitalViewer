@@ -343,7 +343,7 @@
     var range = 5;
     var n = 1;
     var l = 0;
-    var cameraOffset = 9;
+    var cameraOffset = 10;
     camera.position.z = cameraOffset;
     camera.position.x = 0;
     camera.position.y = 0;
@@ -375,6 +375,7 @@
 
 
     window.addEventListener('resize', onResize, false);
+    $('#model-container').click(e=>{enableRotation = false;})
 
     function onResize() {
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
@@ -384,11 +385,17 @@
         renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
         render();
     }
-
+    angle = 0;
+    enableRotation = true;
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
         render();
+        if(enableRotation){
+            camera.position.z = cameraOffset * Math.sin(angle);
+            camera.position.x = cameraOffset * Math.cos( angle ); 
+            angle += 0.01;
+        }
     }
 
     function render() {
@@ -397,8 +404,9 @@
     animate();
 
     function reload() {
+        enableRotation = true;
 
-        cameraOffset = 5 + 4 * Math.pow(n, 2) - l;
+        cameraOffset = 5 + 5 * Math.pow(n, 2) + 10*l;
 
         var waveFunc = "n" + n + "l" + l + "m";
         if (m < 0)
