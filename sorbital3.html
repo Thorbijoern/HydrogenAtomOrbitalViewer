@@ -274,9 +274,9 @@
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
                 let t = 3 * i;
-            positions[t] = posArr[i][0] + 1.5*Math.random()*range/resolution;
-            positions[t + 1] = posArr[i][1] + 1.5*Math.random()*range/resolution;
-            positions[t + 2] = posArr[i][2] + 1.5*Math.random()*range/resolution;
+            positions[t] = posArr[i][0] + 2*Math.random()*range/resolution;
+            positions[t + 1] = posArr[i][1] + 2*Math.random()*range/resolution;
+            positions[t + 2] = posArr[i][2] + 2*Math.random()*range/resolution;
         }
         return positions;
     }
@@ -304,7 +304,7 @@
         }
         //if (l > 0)
         //    return alphas.map(e => e / (5 * parseInt(l) * max));
-        return alphas.map(e => e / (max + max*(l>0)));
+        return alphas.map(e => e / (0.5*max + 1.5*max*(l>0)));
     }
 
 
@@ -317,7 +317,7 @@
     }
     var modelContainer = $("#model-container").get(0);
     modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-    modelContainer.style.height = 0.3 * window.innerWidth + 'px'; 
+    modelContainer.style.height = 0.4 * window.innerWidth + 'px'; 
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
@@ -378,7 +378,7 @@
 
     function onResize() {
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-        modelContainer.style.height = 0.3 * window.innerWidth + 'px'; 
+        modelContainer.style.height = 0.4 * window.innerWidth + 'px'; 
         camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
