@@ -28,7 +28,7 @@
         	vAlpha = alpha; 
         	vColor = customColor; 
         	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); 
-        	gl_PointSize = size * ( 900.0 / -mvPosition.z ); 
+        	gl_PointSize = size * ( 500.0 / -mvPosition.z ); 
         	gl_Position = projectionMatrix * mvPosition; }
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
@@ -270,13 +270,13 @@
         }
     }
 
-    function cubePos1(posArr) { //Creates float arr vertices
+    function cubePos(posArr) { //Creates float arr vertices
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
         		let t = 3 * i;
-            positions[t] = (posArr[i][0]);
-            positions[t + 1] = (posArr[i][1]);
-            positions[t + 2] = (posArr[i][2]);
+            positions[t] = posArr[i][0] + 1.5*Math.random()*range/resolution;
+            positions[t + 1] = posArr[i][1] + 1.5*Math.random()*range/resolution;
+            positions[t + 2] = posArr[i][2] + 1.5*Math.random()*range/resolution;
         }
         return positions;
     }
@@ -302,18 +302,11 @@
                 max = temp;
             alphas[i] = temp;
         }
-        if (l > 0)
-            return alphas.map(e => e / (5 * parseInt(l) * max));
-        return alphas.map(e => e / (max + max*(n>3)));
+        //if (l > 0)
+        //    return alphas.map(e => e / (5 * parseInt(l) * max));
+        return alphas.map(e => e / (max + max*(l>0)));
     }
 
-    function cubePos(posArr) { //Creates THREE vector from array of vectors
-        var cubeVec = [];
-        for (i = 0; i < posArr.length; i++) {
-            cubeVec.push([new THREE.Vector3(posArr[i][0], posArr[i][1], posArr[i][2]), posArr[i][3], posArr[i][4]]);
-        }
-        return cubeVec;
-    }
 
     function cubeSize(resolution, posArr) {
         var sizes = new Float32Array(posArr.length);
@@ -329,9 +322,8 @@
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(modelContainer.offsetWidth - 5, modelContainer.offsetHeight - 5);
+    renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
     modelContainer.appendChild(renderer.domElement);
-    console.log(renderer.domElement)
 
 
     uniforms = {
@@ -347,7 +339,7 @@
     });
 
 
-    var resolution = 42;
+    var resolution = 45;
     var range = 5;
     var n = 1;
     var l = 0;
@@ -361,7 +353,7 @@
 
 
     geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
-    geometry.addAttribute('position', new THREE.BufferAttribute(cubePos1(posArr), 3));
+    geometry.addAttribute('position', new THREE.BufferAttribute(cubePos(posArr), 3));
     geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
     geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
 
@@ -370,7 +362,7 @@
 
 
     scene.add(particleSystem);
-    var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true }));
+    var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: false}));
 
     scene.add(nucleus);
 
@@ -389,7 +381,7 @@
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
         camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(modelContainer.offsetWidth - 5, modelContainer.offsetHeight - 5);
+        renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
         render();
     }
 
@@ -420,18 +412,17 @@
         $('#radial-equation').html("$$R(r)=" + eval('wr' + parseInt(n) + l) + "$$");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "radial-equation"]);
         range = 3 + 2 * n * n + 6 * l
-        resolution = 42 + n*n;
+        resolution = 42 + 3 * n*n;
 
 
         var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
 
         geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
-        geometry.addAttribute('position', new THREE.BufferAttribute(cubePos1(posArr), 3));
+        geometry.addAttribute('position', new THREE.BufferAttribute(cubePos(posArr), 3));
         geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
         geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
 
-        particleSystem = new THREE.Points(
-            geometry, shaderMaterial);
+        particleSystem = new THREE.Points(geometry, shaderMaterial);
         camera.position.z = cameraOffset;
         camera.position.x = 0;
         camera.position.y = 0;
