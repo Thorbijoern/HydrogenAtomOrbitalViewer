@@ -216,6 +216,6 @@
 			var wn4l3mNeg2 = "\\frac{\\sqrt{3}}{3072\\sqrt{6\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin^2\\theta\\,\\cos\\theta\\,e^{-2i\\phi}";
 			var wn4l3mNeg1 = "\\frac{\\sqrt{3}}{6114\\sqrt{5\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin\\theta\\,(5\\cos^2\\theta-1)\\,e^{-i\\phi}";
 			var wn4l3m0 = "\\frac{1}{3072\\sqrt{5\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}(5\\cos^3\\theta-3\\cos\\theta)";
-			var wn4l3Pos1 = "\\frac{\\sqrt{3}}{6114\\sqrt{5\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin\\theta\\,(5\\cos^2\\theta-1)\\,e^{i\\phi}";
+			var wn4l3mPos1 = "\\frac{\\sqrt{3}}{6114\\sqrt{5\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin\\theta\\,(5\\cos^2\\theta-1)\\,e^{i\\phi}";
 			var wn4l3mPos2 = "\\frac{\\sqrt{3}}{3072\\sqrt{6\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin^2\\theta\\,\\cos\\theta\\,e^{2i\\phi}";
 			var wn4l3mPos3 = "\\frac{1}{6114\\sqrt{\\pi}\\,{a_0}^\\frac{3}{2}}\\frac{r^3}{{a_0}^3}\\,e^{\\frac{-r}{a_0}}\\sin^3\\theta\\,e^{3\\phi}";
