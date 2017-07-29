@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 <div>
-                    <p id="radial-equation" align="center" style="color:white">
+                    <p id="radial-equation" align="center" style="color:white; font-size: 12pt">
                         $$R(r) = 2\,{a_0}^\frac{-3}{2}\,e^{-\frac{r}{a_0}}$$
                     </p>
                     <canvas id="myChart" style="width: 95%;"></canvas>
@@ -375,7 +375,13 @@
 
 
     window.addEventListener('resize', onResize, false);
-    $('#model-container').click(e=>{enableRotation = false;})
+    $('#model-container').mouseenter(e=>{enableRotation = false;})
+    $('#model-container').mouseleave(e=>{
+        enableRotation = true;
+        var z = camera.position.z;
+        var x = camera.position.x;
+        angle = Math.atan(z / x) + Math.PI*(x < 0);
+    })
 
     function onResize() {
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
@@ -391,9 +397,13 @@
         requestAnimationFrame(animate);
         controls.update();
         render();
+        console.log(camera.position);
+        var z = camera.position.z;
+        var x = camera.position.x;
+        var r = Math.sqrt(z * z + x * x);
         if(enableRotation){
-            camera.position.z = cameraOffset * Math.sin(angle);
-            camera.position.x = cameraOffset * Math.cos( angle ); 
+            camera.position.z = r * Math.sin( angle);
+            camera.position.x = r * Math.cos( angle ); 
             angle += 0.01;
         }
     }
