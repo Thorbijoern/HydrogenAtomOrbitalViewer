@@ -19,29 +19,10 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
     <script type="x-shader/x-vertex" id="vertexshader">
-        attribute float alpha; 
-        varying float vAlpha; 
-        attribute float size; 
-        attribute vec3 customColor; 
-        varying vec3 vColor; 
-        void main() { 
-            vAlpha = alpha; 
-            vColor = customColor; 
-            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); 
-            gl_PointSize = size * ( 500.0 / -mvPosition.z ); 
-            gl_Position = projectionMatrix * mvPosition; }
+        attribute float alpha; varying float vAlpha; attribute float size; attribute vec3 customColor; varying vec3 vColor; void main() { vAlpha = alpha; vColor = customColor; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_PointSize = size * ( 400.0 / -mvPosition.z ); gl_Position = projectionMatrix * mvPosition; }
     </script>
     <script type="x-shader/x-fragment" id="fragmentshader">
-        varying float vAlpha; 
-        varying vec3 vColor;
-         void main() { 
-            float r = 0.0;
-                    vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-                    r = dot(cxy, cxy);
-                    if (r > 1.0) {
-                    discard;
-                    }
-            gl_FragColor = vec4( vColor, vAlpha ); }
+        varying float vAlpha; varying vec3 vColor; void main() { float r = 0.0; vec2 cxy = 2.0 * gl_PointCoord - 1.0; r = dot(cxy, cxy); if (r > 1.0) { discard; } gl_FragColor = vec4( vColor, vAlpha ); }
     </script>
 </head>
 
@@ -155,6 +136,7 @@
                 <h2 align="center" style="font-weight:bold;color:white;mix-blend-mode: screen; margin-bottom: 0px">Hydrogen Atomic Orbital Viewer</h2>
             </div>
             <div id="model-container" class="col-sm-8"></div>
+                	
             <div class="col-sm-4">
                 <h3 align="center" style="font-weight: bold; color:#AC2B37">Select Quantum Numbers</h3>
                 <div class="wrapper" style="border-style: solid none solid none; border-color: #aaaaaa;border-width: 1px 0 1px 0">
@@ -212,10 +194,10 @@
                 <p style="font-family:'Bubbler One', sans-serif; font-size:12pt; color: white">Instructions: </p>
             </div>
             <div class='col-md-3'>
-            <ul>
-                <li>Scroll to zoom</li>
-                <li>Click and drag to rotate orbital</li>
-                <li>Select quantum numbers and click 'Load Orbital' to load new orbitals</li>
+                <ul>
+                    <li>Scroll to zoom</li>
+                    <li>Click and drag to rotate orbital</li>
+                    <li>Select quantum numbers and click 'Load Orbital' to load new orbitals</li>
                 </ul>
             </div>
         </div>
@@ -273,10 +255,10 @@
     function cubePos(posArr) { //Creates float arr vertices
         var positions = new Float32Array(posArr.length * 3);
         for (i = 0; i < posArr.length; i++) {
-                let t = 3 * i;
-            positions[t] = posArr[i][0] + 2*Math.random()*range/resolution;
-            positions[t + 1] = posArr[i][1] + 2*Math.random()*range/resolution;
-            positions[t + 2] = posArr[i][2] + 2*Math.random()*range/resolution;
+            let t = 3 * i;
+            positions[t] = posArr[i][0] + 1.75 * Math.random() * range / resolution;
+            positions[t + 1] = posArr[i][1] + 1.75 * Math.random() * range / resolution;
+            positions[t + 2] = posArr[i][2] + 1.75 * Math.random() * range / resolution;
         }
         return positions;
     }
@@ -304,27 +286,37 @@
         }
         //if (l > 0)
         //    return alphas.map(e => e / (5 * parseInt(l) * max));
-        return alphas.map(e => e / (0.5*max + 1.5*max*(l>0)));
+        return alphas.map(e => e / (0.5 * max + 1.5 * max * (l > 0)));
     }
 
 
     function cubeSize(resolution, posArr) {
         var sizes = new Float32Array(posArr.length);
         for (var i = 0; i < posArr.length; i++) {
-            sizes[i] =  range / resolution;
+            sizes[i] = range / resolution;
         }
         return sizes;
     }
+
+//Three JS stuff
+    var scenes = [];
+    for(let i = 0; i < 2; i++){
+    	scenes.push(new THREE.Scene());
+    }
+    var axesCamera, modelCamera;
+    var renderers = [];
+    for(let i = 0; i < 2; i++){
+    	renderers.push(new THREE.WebGLRenderer(
+  		{alpha:true}));
+    }
+//------------------------------------------------------Model Viewer
     var modelContainer = $("#model-container").get(0);
     modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-    modelContainer.style.height = 0.4 * window.innerWidth + 'px'; 
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
-    modelContainer.appendChild(renderer.domElement);
-
+    modelContainer.style.height = 0.35 * window.innerWidth + 'px';
+    modelCamera = new THREE.PerspectiveCamera(75, modelContainer.offsetWidth / modelContainer.offsetHeight, 0.1, 1000);
+    renderers[0].setSize(modelContainer.offsetWidth, modelContainer.offsetHeight);
+    renderers[0].domElement.style.zIndex = "0";
+    modelContainer.appendChild(renderers[0].domElement);
 
     uniforms = {
         color: { type: "c", value: new THREE.Color(0xffffff) }
@@ -344,9 +336,9 @@
     var n = 1;
     var l = 0;
     var cameraOffset = 10;
-    camera.position.z = cameraOffset;
-    camera.position.x = 0;
-    camera.position.y = 0;
+    modelCamera.position.z = cameraOffset;
+    modelCamera.position.x = 0;
+    modelCamera.position.y = 0;
     var posArr = simpsonIntegrate(n1l0m0, -range, range, -range, range, -range, range, resolution);
 
     var geometry = new THREE.BufferGeometry();
@@ -361,62 +353,119 @@
         geometry, shaderMaterial);
 
 
-    scene.add(particleSystem);
-    var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: false}));
+    scenes[0].add(particleSystem);
+    var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: false }));
 
-    scene.add(nucleus);
+    scenes[0].add(nucleus);
 
 
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.OrbitControls(modelCamera, renderers[0].domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
     controls.enabePan = false;
+//------------------------------------------------------- Axes View
+    axesCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    renderers[1].setSize(modelContainer.offsetWidth/10, modelContainer.offsetWidth/10);
+    renderers[1].domElement.style.zIndex = "1";
+    renderers[1].domElement.style.position ="absolute";
+    renderers[1].domElement.style.bottom ="0";
+    renderers[1].domElement.style.right ="0";
+    renderers[1].setClearColor(0x000000, 0.0);
 
+
+    modelContainer.appendChild(renderers[1].domElement);
+    var arrowHead = [];
+    for(let i = 0; i < 3; i++){
+    	arrowHead.push(new THREE.Mesh(new THREE.CylinderGeometry(0, 0.5, 1, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+    }
+    var arrowTail = [];
+    for(let i = 0; i < 3; i++){
+    	arrowTail.push(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+    	arrowTail[i].position.set(0,-2,0);
+    }
+    axesCamera.position.z = 10;
+    axesCamera.position.x = 0;
+    axesCamera.position.y = 0;
+
+    
+    var arrow = [];
+    for(let i = 0; i < 3; i++){
+    	arrow.push(new THREE.Group());
+    	arrow[i].add(arrowHead[i]);
+    	arrow[i].add(arrowTail[i]);
+    }
+    arrow[0].position.set(0,4,0);
+		arrow[1].rotation.set(0,0,-Math.PI/2);
+		arrow[1].position.set(4,0,0);
+		arrow[2].rotation.set(Math.PI/2,0,0);
+		arrow[2].position.set(0,0,4);
+
+		var axes = new THREE.Group();
+		arrow.forEach( e=>{axes.add(e)
+		});
+		axes.position.set(0,0,0);
+
+    scenes[1].add(axes);
+    axescontrols = new THREE.OrbitControls(axesCamera, renderers[0].domElement);
+    axescontrols.enableDamping = true;
+    axescontrols.dampingFactor = 0.25;
+    axescontrols.enableZoom = false;
+    axescontrols.enabePan = false;
+//----------------------------------------------Animation and Windows event Handling
 
     window.addEventListener('resize', onResize, false);
-    $('#model-container').mouseenter(e=>{enableRotation = false;})
-    $('#model-container').mouseleave(e=>{
-        enableRotation = true;
-        var z = camera.position.z;
-        var x = camera.position.x;
-        angle = Math.atan(z / x) + Math.PI*(x < 0);
-    })
+    $('#model-container').mousedown(e => { enableRotation = 0; });
+    $('#model-container').mouseup(e => {    
+    	enableRotation = 1;
+    	var z = modelCamera.position.z;
+        var x = modelCamera.position.x;
+        angle = Math.atan(z / x) -  Math.PI * (x < 0);
+      });
 
     function onResize() {
         modelContainer.style.width = 0.65 * window.innerWidth + 'px';
-        modelContainer.style.height = 0.4 * window.innerWidth + 'px'; 
-        camera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(modelContainer.offsetWidth , modelContainer.offsetHeight);
+        modelContainer.style.height = 0.35 * window.innerWidth + 'px';
+        modelCamera.aspect = modelContainer.offsetWidth / modelContainer.offsetHeight;
+        modelCamera.updateProjectionMatrix();
+        renderers[0].setSize(modelContainer.offsetWidth, modelContainer.offsetHeight);
         render();
     }
     angle = 0;
     enableRotation = true;
+
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
+        axescontrols.update();
         render();
-        console.log(camera.position);
-        var z = camera.position.z;
-        var x = camera.position.x;
+        var z = modelCamera.position.z;
+        var x = modelCamera.position.x;
+        var y = modelCamera.position.y;
+        var z1 = axesCamera.position.z;
+        var x1 = axesCamera.position.x;
         var r = Math.sqrt(z * z + x * x);
-        if(enableRotation){
-            camera.position.z = r * Math.sin( angle);
-            camera.position.x = r * Math.cos( angle ); 
+        var p = Math.sqrt(z1 * z1 + x1 * x1);
+        if (enableRotation) {
+            modelCamera.position.z = r * Math.sin(angle);
+            modelCamera.position.x = r * Math.cos(angle);
+            axesCamera.position.z = p * Math.sin(angle);
+            axesCamera.position.x = p * Math.cos(angle);
             angle += 0.01;
         }
     }
 
     function render() {
-        renderer.render(scene, camera);
+    	
+        renderers[0].render(scenes[0], modelCamera);
+        renderers[1].render(scenes[1], axesCamera);
     }
     animate();
 
     function reload() {
         enableRotation = true;
 
-        cameraOffset = 5 + 5 * Math.pow(n, 2) + 10*l;
+        cameraOffset = 5 + 5 * Math.pow(n, 2) + 10 * l;
 
         var waveFunc = "n" + n + "l" + l + "m";
         if (m < 0)
@@ -430,7 +479,7 @@
         $('#radial-equation').html("$$R(r)=" + eval('wr' + parseInt(n) + l) + "$$");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "radial-equation"]);
         range = 3 + 2 * n * n + 6 * l
-        resolution = 42 + 3 * n*n;
+        resolution = 42 + 3 * n * n;
 
 
         var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
@@ -441,9 +490,13 @@
         geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
 
         particleSystem = new THREE.Points(geometry, shaderMaterial);
-        camera.position.z = cameraOffset;
-        camera.position.x = 0;
-        camera.position.y = 0;
+        modelCamera.position.z = cameraOffset;
+        modelCamera.position.x = 0;
+        modelCamera.position.y = 0;
+        axesCamera.position.z = 10;
+        axesCamera.position.x = 0;
+        axesCamera.position.y = 0;
+
 
         reloadChart();
     }
