@@ -3,7 +3,7 @@
 
 <head>
     <meta charset=utf-8>
-    <title>Generates view of atomic orbital </title>
+    <title>The Hydrogen Atom</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="https://npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>
@@ -30,10 +30,10 @@
     <svg id="circular-menu" class="Absolute Center">
         <defs>
             <filter id="f1" x="0" y="0" width="200%" height="200%">
-                <feOffset result="offOut" in="SourceGraphic" dx="0" dy="0" />
-                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.5 0" />
-                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="5" />
-                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+                <feOffset result="offOut" in="SourceGraphic" dx="0" dy="0" ></feOffset>
+                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.5 0" ></feColorMatrix>
+                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="5"></feGaussianBlur>
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" ></feBlend>
             </filter>
         </defs>
         <g filter="url(#f1)">
@@ -42,21 +42,21 @@
            L 60 0
            A 60 60 0 0 1 29.088577214780226 52.47718242836375
            L 19 35
-           A 40 40 0 0 0 40 0" fill="#A9B0B7" class="radial-element" />
+           A 40 40 0 0 0 40 0" transform="translate(100)" fill="#A9B0B7" class="radial-element" ></path>
             </a>
-            <a href="index.html" alt="lol">
+            <a href="index.html" xlink:href="index.html" alt="lol">
                 <path id="elem2" d="M 40 0
            L 60 0
            A 60 60 0 0 1 29.088577214780226 52.47718242836375
            L 19 35
-           A 40 40 0 0 0 40 0" transform="translate(100) rotate(60)" fill="#AC2B37" class="radial-element" />
+           A 40 40 0 0 0 40 0" transform="translate(100) rotate(60)" fill="#AC2B37" class="radial-element"></path>
             </a>
             <a href="#">
                 <path id="elem3" d="M 40 0
            L 60 0
            A 60 60 0 0 1 29.088577214780226 52.47718242836375
            L 19 35
-           A 40 40 0 0 0 40 0" fill="#A9B0B7" class="radial-element" />
+           A 40 40 0 0 0 40 0" transform="translate(100) rotate(120)" fill="#A9B0B7" class="radial-element" ></path>
             </a>
         </g>
     </svg>
@@ -136,7 +136,7 @@
                 <h2 align="center" style="font-weight:bold;color:white;mix-blend-mode: screen; margin-bottom: 0px">Hydrogen Atomic Orbital Viewer</h2>
             </div>
             <div id="model-container" class="col-sm-8"></div>
-                	
+                    
             <div class="col-sm-4">
                 <h3 align="center" style="font-weight: bold; color:#AC2B37">Select Quantum Numbers</h3>
                 <div class="wrapper" style="border-style: solid none solid none; border-color: #aaaaaa;border-width: 1px 0 1px 0">
@@ -286,7 +286,7 @@
         }
         //if (l > 0)
         //    return alphas.map(e => e / (5 * parseInt(l) * max));
-        return alphas.map(e => e / (0.5 * max + 1.5 * max * (l > 0)));
+        return alphas.map(e => e / (0.25 * max + 1.75 * max * (l > 0)));
     }
 
 
@@ -301,13 +301,13 @@
 //Three JS stuff
     var scenes = [];
     for(let i = 0; i < 2; i++){
-    	scenes.push(new THREE.Scene());
+        scenes.push(new THREE.Scene());
     }
     var axesCamera, modelCamera;
     var renderers = [];
     for(let i = 0; i < 2; i++){
-    	renderers.push(new THREE.WebGLRenderer(
-  		{alpha:true}));
+        renderers.push(new THREE.WebGLRenderer(
+        {alpha:true}));
     }
 //------------------------------------------------------Model Viewer
     var modelContainer = $("#model-container").get(0);
@@ -363,7 +363,7 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
-    controls.enabePan = false;
+    controls.noPan = true;
 //------------------------------------------------------- Axes View
     axesCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     renderers[1].setSize(modelContainer.offsetWidth/10, modelContainer.offsetWidth/10);
@@ -377,12 +377,12 @@
     modelContainer.appendChild(renderers[1].domElement);
     var arrowHead = [];
     for(let i = 0; i < 3; i++){
-    	arrowHead.push(new THREE.Mesh(new THREE.CylinderGeometry(0, 0.5, 1, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+        arrowHead.push(new THREE.Mesh(new THREE.CylinderGeometry(0, 0.5, 1, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
     }
     var arrowTail = [];
     for(let i = 0; i < 3; i++){
-    	arrowTail.push(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
-    	arrowTail[i].position.set(0,-2,0);
+        arrowTail.push(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+        arrowTail[i].position.set(0,-2,0);
     }
     axesCamera.position.z = 10;
     axesCamera.position.x = 0;
@@ -391,34 +391,34 @@
     
     var arrow = [];
     for(let i = 0; i < 3; i++){
-    	arrow.push(new THREE.Group());
-    	arrow[i].add(arrowHead[i]);
-    	arrow[i].add(arrowTail[i]);
+        arrow.push(new THREE.Group());
+        arrow[i].add(arrowHead[i]);
+        arrow[i].add(arrowTail[i]);
     }
     arrow[0].position.set(0,4,0);
-		arrow[1].rotation.set(0,0,-Math.PI/2);
-		arrow[1].position.set(4,0,0);
-		arrow[2].rotation.set(Math.PI/2,0,0);
-		arrow[2].position.set(0,0,4);
+        arrow[1].rotation.set(0,0,-Math.PI/2);
+        arrow[1].position.set(4,0,0);
+        arrow[2].rotation.set(Math.PI/2,0,0);
+        arrow[2].position.set(0,0,4);
 
-		var axes = new THREE.Group();
-		arrow.forEach( e=>{axes.add(e)
-		});
-		axes.position.set(0,0,0);
+        var axes = new THREE.Group();
+        arrow.forEach( e=>{axes.add(e)
+        });
+        axes.position.set(0,0,0);
 
     scenes[1].add(axes);
     axescontrols = new THREE.OrbitControls(axesCamera, renderers[0].domElement);
     axescontrols.enableDamping = true;
     axescontrols.dampingFactor = 0.25;
     axescontrols.enableZoom = false;
-    axescontrols.enabePan = false;
+    axescontrols.noPan = true;
 //----------------------------------------------Animation and Windows event Handling
 
     window.addEventListener('resize', onResize, false);
     $('#model-container').mousedown(e => { enableRotation = 0; });
     $('#model-container').mouseup(e => {    
-    	enableRotation = 1;
-    	var z = modelCamera.position.z;
+        enableRotation = 1;
+        var z = modelCamera.position.z;
         var x = modelCamera.position.x;
         angle = Math.atan(z / x) -  Math.PI * (x < 0);
       });
@@ -456,7 +456,7 @@
     }
 
     function render() {
-    	
+        
         renderers[0].render(scenes[0], modelCamera);
         renderers[1].render(scenes[1], axesCamera);
     }
@@ -468,9 +468,9 @@
         cameraOffset = 5 + 5 * Math.pow(n, 2) + 10 * l;
 
         var waveFunc = "n" + n + "l" + l + "m";
-        if (m < 0)
+        if (m > 0)
             waveFunc += 'Pos';
-        else if (m > 0)
+        else if (m < 0)
             waveFunc += 'Neg';
         waveFunc += Math.abs(m);
 
@@ -509,7 +509,7 @@
             minY: -11,
             maxX: range,
             maxY: 11, //$('chart-slider').val(),
-            unitsPerTick: 1
+            unitsPerTick: 1 + (n > 1) + (n > 2) + (n > 3)
         });
         myGraph.drawEquation(eval('r' + n + l), 'red', 2);
     }
