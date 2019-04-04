@@ -1,0 +1,398 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset=utf-8>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Atom Orbital 3D-Plot (Hydrogen)</title>
+  <!--<link rel="stylesheet" href="css/hydrogen.css">-->
+  <style>
+        body {
+            color: #000;
+            font-family:Monospace;
+            font-size:13px;
+            text-align:center;
+            font-weight: bold;
+            background-color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+        #info {
+            color: #fff;
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+  </style>
+    <script type="x-shader/x-vertex" id="vertexshader">
+        attribute float alpha;
+        varying float vAlpha;
+        attribute float size;
+        attribute vec3 customColor;
+        varying vec3 vColor;
+        void main() {
+            vAlpha = alpha;
+            vColor = customColor;
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            gl_PointSize = size * ( 400.0 / -mvPosition.z );
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentshader">
+        varying float vAlpha;
+        varying vec3 vColor;
+        void main() {
+            float r = 0.0;
+            vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+            r = dot(cxy, cxy);
+            if (r > 1.0) {
+                discard;
+            }
+            gl_FragColor = vec4( vColor, vAlpha );
+        }
+    </script>
+</head>
+
+<body>
+  <div id="info">
+    <!--Hydrogen Atomic Orbital Viewer-->
+    Atomorbital 3D-Plot
+    <br />
+    <input type="checkbox" id="input_rotate" name="rotate" onchange="onChange()" checked>
+    <label for="rotate">Rotation animieren</label>
+    <input type="range" id="input_n" name="n" min="1" max="4" value="1" onchange="onChange()" oninput="onInput()">
+    <label for="n">n=<span id="n">1</span></label>
+    <input type="range" id="input_l" name="l" min="0" max="0" value="0" onchange="onChange()" oninput="onInput()">
+    <label for="l">l=<span id="l">0</span></label>
+    <input type="range" id="input_m" name="m" min="0" max="0" value="0" onchange="onChange()" oninput="onInput()">
+    <label for="m">m=<span id="m">0</span></label>
+    <input type="button" value="plot" onclick="reload()">
+    <br />
+    <span id="orbital_name">1s</span>
+  </div>
+  <div id="model-container"></div>
+
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script>-->
+  <!--<script src="https://fastcdn.org/three.js/73/three.min.js"></script>-->
+  <!--<script type="application/javascript" src="https://raw.githubusercontent.com/mrdoob/three.js/r102/build/three.min.js"></script>
+  <script src="https://raw.githubusercontent.com/mrdoob/three.js/r102/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://raw.githubusercontent.com/mrdoob/three.js/r102/examples/js/WebGL.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r102/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r102/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r102/examples/js/WebGL.js"></script>
+
+  <script src="js/WaveFunction.js"></script>
+  <script>
+
+    if ( WEBGL.isWebGLAvailable() === false ) {
+        document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+    }
+    
+    // Object3D.DefaultUp is Vector3( 0, 1, 0 ) by default, meaning
+    // that the y-axis is up by default... that's weird and the following
+    // changes it to a normal z-axis-up.
+    THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+
+    var container, camera, controls, renderer;
+    var sceneOrbital, sceneAxes;
+    var renderers = [];
+    var axesCamera, modelCamera;
+    var geometry, shaderMaterial;   // fix?
+
+    var resolution, range, n, l;
+    var rotate = true;
+
+    init();
+    //render(); // remove when using next line for animation loop (requestAnimationFrame)
+    animate();
+    
+    
+    function init() {
+        //container = document.querySelector( '.container' );
+        container = document.querySelector("#model-container");
+        
+        sceneOrbital = new THREE.Scene();
+        sceneOrbital.background = new THREE.Color( 0x000000 );
+
+        sceneAxes = new THREE.Scene();
+        sceneAxes.background = new THREE.Color( 0x000000 );
+
+        renderers.push(new THREE.WebGLRenderer( { alpha: true } ) );
+        renderers.push(new THREE.WebGLRenderer( { alpha: true } ) );
+    
+        //Model Viewer
+        modelCamera = new THREE.PerspectiveCamera( 75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        //modelCamera.up.set( 0, 0, 1 );
+        //modelCamera.lookAt( 0, 0, 1);
+        resize();
+        
+        //renderers[0].domElement.style.zIndex = "0"; // what does it do?
+        container.appendChild(renderers[0].domElement);
+    
+        shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                color: { type: "c", value: new THREE.Color(0xffffff) }
+            },
+            vertexShader: document.querySelector("#vertexshader").textContent,
+            fragmentShader: document.querySelector("#fragmentshader").textContent,
+            blending: THREE.AdditiveBlending,
+            depthTest: false,
+            transparent: true
+        });
+    
+    
+        resolution = 45; // 45, 100
+        range = 5; // 5, 10
+        n = 1;
+        l = 0;
+        var cameraOffset = 10;
+        modelCamera.position.set( cameraOffset/*0*/, 0, 0/*cameraOffset*/ );
+        var posArr = simpsonIntegrate(n1l0m0, -range, range, -range, range, -range, range, resolution);
+    
+        geometry = new THREE.BufferGeometry();
+    
+    
+        geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
+        geometry.addAttribute('position', new THREE.BufferAttribute(cubePos(posArr), 3));
+        geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
+        geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
+    
+        var particleSystem = new THREE.Points(geometry, shaderMaterial);
+        sceneOrbital.add(particleSystem);
+        
+        var nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: false }));
+        sceneOrbital.add(nucleus);
+    
+    
+        controls = new THREE.OrbitControls(modelCamera, renderers[0].domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        
+        initAxes();
+        
+        initAnimationEvents();
+    }
+    
+    function initAxes() {
+        axesCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        renderers[1].setSize(container.offsetWidth/10, container.offsetWidth/10);
+        renderers[1].domElement.style.zIndex = "1";
+        renderers[1].domElement.style.position ="absolute";
+        renderers[1].domElement.style.bottom ="0";
+        renderers[1].domElement.style.right ="0";
+        renderers[1].setClearColor(0x000000, 0.0);
+    
+        container.appendChild(renderers[1].domElement);
+        
+        var arrowsHead = [];
+        for(let i = 0; i < 3; i++){
+            arrowsHead.push(new THREE.Mesh(new THREE.CylinderGeometry(0, 0.5, 1, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+        }
+        var arrowsTail = [];
+        for(let i = 0; i < 3; i++){
+            arrowsTail.push(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: false })));
+            arrowsTail[i].position.set(0,-2,0);
+        }
+        axesCamera.position.set( 10/*0*/, 0, 0/*10*/ );
+    
+        
+        var arrows = [];
+        for(let i = 0; i < 3; i++){
+            arrows.push(new THREE.Group());
+            arrows[i].add(arrowsHead[i]);
+            arrows[i].add(arrowsTail[i]);
+        }
+        arrows[0].position.set(0,4,0);
+        arrows[1].rotation.set(0,0,-Math.PI/2);
+        arrows[1].position.set(4,0,0);
+        arrows[2].rotation.set(Math.PI/2,0,0);
+        arrows[2].position.set(0,0,4);
+
+        var axes = new THREE.Group();
+        arrows.forEach( e=>{axes.add(e)} );
+        axes.position.set(0,0,0);
+
+        sceneAxes.add(axes);
+        axescontrols = new THREE.OrbitControls(axesCamera, renderers[0].domElement);
+        axescontrols.enableDamping = true;
+        axescontrols.dampingFactor = 0.25;
+        axescontrols.enableZoom = false;
+        axescontrols.enablePan = false;
+    }
+    
+    function initAnimationEvents() {
+        //Animation and Window event Handling
+        window.addEventListener('resize', onResize, false);
+        container.onmousedown = function() {enableRotation = false;};
+        container.onmouseup = function() {    
+            enableRotation = rotate;
+            var z = modelCamera.position.z;
+            var x = modelCamera.position.x;
+            angle = Math.atan(z / x) -  Math.PI * (x < 0);
+        };
+        
+        angle = 0;
+        enableRotation = rotate;
+    }
+    
+    function cubePos(posArr) { //Creates float arr vertices
+        var positions = new Float32Array(posArr.length * 3);
+        for (i = 0; i < posArr.length; i++) {
+            let t = 3 * i;
+            positions[t] = posArr[i][0] + 1.75 * Math.random() * range / resolution;
+            positions[t + 1] = posArr[i][1] + 1.75 * Math.random() * range / resolution;
+            positions[t + 2] = posArr[i][2] + 1.75 * Math.random() * range / resolution;
+        }
+        return positions;
+    }
+
+    function cubeCol(posArr) {
+        var colors = new Float32Array(posArr.length * 3);
+        for (i = 0; i < posArr.length; i++) {
+            var color = new THREE.Color(posArr[i][4]);
+            let t = 3 * i;
+            colors[t] = color.r;
+            colors[t + 1] = color.g;
+            colors[t + 2] = color.b;
+        }
+        return colors;
+    }
+
+    function cubeAlpha(posArr) {
+        var alphas = new Float32Array(posArr.length);
+        max = 0;
+        for (i = 0; i < posArr.length; i++) {
+            var temp = posArr[i][3];
+            if (temp > max)
+                max = temp;
+            alphas[i] = temp;
+        }
+        //if (l > 0)
+        //    return alphas.map(e => e / (5 * parseInt(l) * max));
+        return alphas.map(e => e / (0.25 * max + 1.75 * max * (l > 0)));
+    }
+
+
+    function cubeSize(resolution, posArr) {
+        var sizes = new Float32Array(posArr.length);
+        for (var i = 0; i < posArr.length; i++) {
+            sizes[i] = range / resolution;
+        }
+        return sizes;
+    }
+
+    function onResize() {
+        resize();
+        render();
+    }
+    
+    function resize() {
+        container.style.width = window.innerWidth + 'px';
+        container.style.height = window.innerHeight + 'px';
+        modelCamera.aspect = container.offsetWidth / container.offsetHeight;
+        modelCamera.updateProjectionMatrix();
+        renderers[0].setSize(container.offsetWidth, container.offsetHeight);
+    }
+    
+    function onChange() {
+        rotate = document.querySelector("#input_rotate").checked;
+        enableRotation = rotate;
+        
+        n = document.querySelector("#input_n").value;
+        document.querySelector("#n").innerText = n;
+        
+        lInput = document.querySelector("#input_l");
+        lInput.max = n - 1;
+        l = lInput.value;
+        document.querySelector("#l").innerText = l;
+        
+        mInput = document.querySelector("#input_m");
+        mInput.max = l;
+        mInput.min = -l;
+        m = mInput.value;
+        document.querySelector("#m").innerText = m;
+        
+        //update_orbital_name();
+        
+        render();
+    }
+    function onInput() {
+        document.querySelector("#n").innerText = document.querySelector("#input_n").value;
+        document.querySelector("#l").innerText = document.querySelector("#input_l").value;
+        document.querySelector("#m").innerText = document.querySelector("#input_m").value;
+    }
+    function update_orbital_name() {
+        n = document.querySelector("#input_n").value;
+        type = {0: "s", 1: "p", 2: "d", 3: "f"}; // letter to the value of l; TODO: don't hardcode?
+        document.querySelector("#orbital_name").innerText = n + type[n-1];
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        axescontrols.update();
+        render();
+        var z = modelCamera.position.z;
+        var x = modelCamera.position.x;
+        var y = modelCamera.position.y;
+        var y1 = axesCamera.position.y; // z to y
+        var x1 = axesCamera.position.x;
+        //var r = Math.sqrt(z * z + x * x);
+        //var p = Math.sqrt(z1 * z1 + x1 * x1);
+        var r = Math.sqrt(y * y + x * x);
+        var p = Math.sqrt(y1 * y1 + x1 * x1);
+        if (enableRotation) {
+            modelCamera.position.y = r * Math.sin(angle); // z to y
+            modelCamera.position.x = r * Math.cos(angle);
+            axesCamera.position.y = p * Math.sin(angle); // z to y
+            axesCamera.position.x = p * Math.cos(angle);
+            angle += 0.01;
+        }
+    }
+
+    function render() {
+        renderers[0].render(sceneOrbital, modelCamera);
+        renderers[1].render(sceneAxes, axesCamera);
+    }
+
+    function reload() {
+        enableRotation = rotate;
+        
+        update_orbital_name();
+
+        cameraOffset = 5 + 5 * Math.pow(n, 2) + 10 * l;
+
+        var waveFunc = "n" + n + "l" + l + "m";
+        if (m > 0)
+            waveFunc += 'Pos';
+        else if (m < 0)
+            waveFunc += 'Neg';
+        waveFunc += Math.abs(m);
+
+        /*$('#equation').html("$$\\psi(r,\\theta,\\phi)=" + eval('w' + waveFunc) + "$$");
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
+        $('#radial-equation').html("$$R(r)=" + eval('wr' + parseInt(n) + l) + "$$");
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "radial-equation"]);*/
+        range = 3 + 2 * n * n + 6 * l
+        resolution = 42 + 3 * n * n;
+        
+
+        var posArr = simpsonIntegrate(eval(waveFunc), -range, range, -range, range, -range, range, resolution);
+
+        geometry.addAttribute('size', new THREE.BufferAttribute(cubeSize(resolution, posArr), 1));
+        geometry.addAttribute('position', new THREE.BufferAttribute(cubePos(posArr), 3));
+        geometry.addAttribute('customColor', new THREE.BufferAttribute(cubeCol(posArr), 3));
+        geometry.addAttribute('alpha', new THREE.BufferAttribute(cubeAlpha(posArr), 1));
+
+        particleSystem = new THREE.Points(geometry, shaderMaterial);
+        modelCamera.position.set( cameraOffset, 0, 0/*cameraOffset*/ );
+        axesCamera.position.set( 10/*0*/, 0, 0/*10*/ );
+    }
+    </script>
+</body>
+
+</html>

@@ -49,7 +49,7 @@
 				return 2*Math.exp(-R);
 			}
 			function r20(x,y,z){
-				var R =r(x,y,z);
+				var R = r(x,y,z);
 				return (1-R/2)*Math.exp(-R/2)/(Math.sqrt(2));
 			}
 			function r21(x,y,z){
