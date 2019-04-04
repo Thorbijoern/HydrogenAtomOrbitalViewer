@@ -10,4 +10,4 @@ shockwave player-little bit of dated tech for today.
 additional plugins
 * Potentially run on mobile devices
 
-Hopefully this my be a nice learning tool dor people to use, and a great introduction into quantum mechanics. :)
+Hopefully this my be a nice learning tool for people to use, and a great introduction into quantum mechanics. :)
